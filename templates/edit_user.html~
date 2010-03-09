@@ -1,0 +1,90 @@
+{% extends "base.html" %} 
+{% block body %}
+
+{% if len(errors) > 0 %}
+  {{ errors }}
+{% end %}
+  <div>
+    <form action="/payroll/user/{{user_id}}/edit" method="post" name="edit_user">
+      {{ xsrf_form_html() }}
+      <div >
+        <table>
+          <tr>
+            <td>Employee Name:</td> 
+            <td>
+              <textarea name="name" id="name" rows="1" cols="20">{% try %}{{ user_details['name'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Date of Birth:</td> 
+            <td>
+              <textarea name="DOB" id="DOB" rows="1" cols="10">{% try %}{{ str(user_details['DOB']) }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Contact Details:</td> 
+            <td>
+              <textarea name="mobile" id="mobile" rows="1" cols="10">{% try %}{{ user_details['mobile'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Permanant Address:</td> 
+            <td>
+              <textarea name="permanant_address" id="permanant_address" rows="3" cols="30">{% try %}{{ user_details['permanant_address'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Communication Address:</td> 
+            <td>
+              <textarea name="communication_address" id="communication_address" rows="3" cols="30">{% try %}{{ user_details['communication_address'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div>
+        <table>
+          <tr>
+            <td>Designation:</td> 
+            <td>
+              <textarea name="designation" id="designation" rows="1" cols="20">{% try %}{{ user_details['designation'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Team:</td> 
+            <td>
+              <textarea name="team" id="team" rows="1" cols="20">{% try %}{{ user_details['team'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Joining date:</td> 
+            <td>
+              <textarea name="joined_on" id="joined_on" rows="1" cols="10">{% try %}{{ user_details['joined_on'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>PAN Number:</td> 
+            <td>
+              <textarea name="pan" id="pan" rows="1" cols="15">{% try %}{{ user_details['pan'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Salary Payment Mode:</td> 
+            <td>
+              <input type="radio" name="pay_mode" id="bank" value="HDFC Bank" {%  try %}{{ ('','checked="checked"')[str(user_details['pay_mode']) == "bank" ] }}{%  except %}{{  '' }}{%  end %}/> HDFC Bank &nbsp;
+              <textarea name="account_no" id="account_no" rows="1" cols="15">{% try %}{{ user_details['account_no'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+            <td>
+              <input type="radio" name="pay_mode" id="cheque" value="cheque" {%  try %}{{ ('','checked="checked"')[str(user_details['pay_mode']) == "cheque" ] }}{%  except %}{{  '' }}{%  end %}/> Cheque
+            </td>
+          </tr>
+        </table>
+      </div>
+      <input type="submit" value="Update">
+    </form>
+  	{% end %}
+  </div>
+
+{% block page_title %}
+  PaGaLGuY New user
+{% end %}

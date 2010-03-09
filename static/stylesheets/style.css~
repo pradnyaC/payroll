@@ -1,0 +1,1715 @@
+html {
+  height: 100%;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  font-size: 12px;
+}
+
+table#Wrapper {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  background: url(../images/background-repeat-y.gif) top center repeat-y
+    #888888;
+}
+
+a:link,a:visited {
+  color: #254156;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:focus {
+  outline: 1px dotted #CCC;
+}
+
+a.MetaLinks:link,a.MetaLinks:visited {
+  font-size: 12px;
+  color: #2F4F4F;
+}
+
+h2 {
+  color: #222;
+  font-size: 16px;
+  margin: 0px 0px 4px;
+}
+
+h3 {
+  color: #222;
+  font-size: 15px;
+  margin: 3px 2px 5px;
+  padding-bottom: 3px;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+h4 {
+  color: #222;
+  font-size: 13px;
+  padding-bottom: 1px;
+  margin: 1px 3px 2px;
+  border-bottom: 1px dotted #5596c7;
+}
+
+p {
+  margin: 3px 0px 5px;
+}
+
+form {
+  margin: 0px;
+  padding: 0px;
+}
+
+#BodyContainer {
+  width: 960px;
+  margin: auto;
+  background: #FFF;
+}
+
+#LogoContainer {
+  padding: 5px;
+}
+
+#MainBlock {
+  padding: 5px 10px;
+}
+
+#SponsorsBlock {
+  border: 1px solid #c6d8ff;
+  width: 240px;
+  padding: 5px;
+  float: right;
+  border-radius: 8px;
+  -webkit-box-shadow: 0px 0px 8px #CCC;
+  -moz-border-radius: 8px;
+  -moz-box-shadow: 0px 0px 8px #CCC;
+}
+
+#LoginRightBlock {
+  float: right;
+}
+
+#LoginBlock, #LatestActivityBlock {
+  border: 1px solid #c6d8ff;
+  width: 320px;
+  padding: 5px;
+  border-radius: 8px;
+  -webkit-box-shadow: 0px 0px 8px #CCC;
+  -moz-border-radius: 8px;
+  -moz-box-shadow: 0px 0px 8px #CCC;
+}
+
+#LatestActivityBlock {
+  margin-top: 15px;
+}
+
+#LoginBlock h3 {
+  text-align: center;
+}
+
+#LoginBlock .Errors {
+  margin: 2px auto;
+  width: 270px;
+  padding: 5px 10px;
+  border: 1px solid #C00;
+  color: #C00;
+  background: #FFE8E8;
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+}
+
+#LoginTable {
+  margin: auto;
+  width: 300px;
+  font-size: 13px;
+  border-collapse: collapse;
+}
+
+#LoginTable label {
+  margin: 0px;
+}
+
+#LoginTable .InputText {
+  border: 1px solid #42749b;
+  width: 188px;
+  margin: 0px;
+  padding: 2px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+#LoginTable .InputButton {
+  border: 1px solid #888;
+  background: #F7F7F7;
+  font-size: 12px;
+  padding: 2px 15px;
+  border-radius: 8px;
+  -webkit-box-shadow: 0px 0px 8px #CCC;
+  -moz-border-radius: 8px;
+  -moz-box-shadow: 0px 0px 8px #CCC;
+}
+
+#LoginTable .LoginLabels {
+  display: inline-block;
+  width: 90px;
+}
+
+#LoginTable .LoginText {
+  font-size: 11px;
+  padding: 5px;
+}
+
+#LoginTable .LoginText a {
+  color: #00C;
+}
+
+#LoginTabs {
+  background: #EAF1FE;
+  padding-top: 5px;
+  padding-left: 5px;
+}
+
+#LoginTabs a:link, #LoginTabs a:visited {
+  font-size: 14px;
+  display: inline-block;
+  padding: 6px 15px;
+  outline: none;
+}
+
+#LoginTabs a.Active:link, #LoginTabs a.Active:visited {
+  background: #FFF;
+  padding: 4px 13px;
+  border: 2px solid #254156;
+  border-bottom: 2px solid #FFF;
+  outline: none;
+}
+
+#LoginTabsBody {
+  border-top: 2px solid #254156;
+  margin-top: -2px;
+}
+
+#LoginTabsBody .LoginTabBody {
+  padding: 15px 5px;
+}
+
+#LoginHeadings {
+  margin-bottom: 10px;
+}
+
+#LoginHeadingsTable {
+  border-collapse: collapse;
+}
+
+#LoginHeadingsTable h1{
+  font-size: 24px;
+  margin: 0px;
+}
+
+#LoginHeadingsTable p{
+  font-size: 15px;
+  font-family: "Georgia", "Times New Roman", "Times", "Courier";
+  line-height: 20px;
+}
+
+#PrepBlockLogin {
+  margin-right: 350px;
+}
+
+#PrepBlock {
+  margin-right: 265px;
+}
+
+#NotificationBlock {
+  background: #FFFCE3;
+  border: 1px solid #EBDDB4;
+  padding: 5px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  -webkit-box-shadow: 0px 0px 8px #CCC;
+  -moz-border-radius: 8px;
+  -moz-box-shadow: 0px 0px 8px #CCC;
+}
+
+#QuestionNotifications {
+  background: #FFFCE3;
+  border: 1px solid #EBDDB4;
+}
+
+#MenuBlock {
+  width: 125px;
+  float: left;
+}
+
+#MenuBlock a:link,#MenuBlock a:visited {
+  display: block;
+  border-top: 1px solid #D0E0EC;
+  border-bottom: 1px solid #D0E0EC;
+  padding: 5px 0px;
+  color: #254156;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  margin-bottom: -1px;
+}
+
+#MenuBlock a:hover {
+  text-decoration: none;
+  background: #f2faff;
+}
+
+#MenuBlock a.Active:link,#MenuBlock a.Active:visited {
+  background: #3B5998;
+  color: #FFF;
+}
+
+#MenuBlock a.Active:hover {
+  background: #4a70bf;
+}
+
+#ContentStream {
+  margin-left: 135px;
+}
+
+#ContentStream br {
+  margin-bottom: 10px;
+}
+
+#ContentStream .ReputationInTopics br {
+  margin-bottom: 0px;
+}
+
+#BreadCrumbs {
+  margin-bottom: 5px;
+  padding: 4px 8px;
+  background: #FFFCE3;
+  border: 1px solid #ffeabf;
+  margin: 0px 0px 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-box-shadow: 0px 0px 3px #CCC;
+  -moz-box-shadow: 0px 0px 3px #CCC;
+}
+
+#BreadCrumbs a {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+#HomeBlock .AreaBlock {
+  border: 1px solid #ffeabf;
+  margin: 0px 0px 10px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+}
+
+#PageTabs, #activityStreamTab {
+  border-bottom: 1px solid #89a8e6;
+  padding: 3px 10px 0px;
+  text-align: right;
+  margin-bottom: 5px;
+}
+
+#PageTabs a:link,#PageTabs a:visited {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #FFF;
+  font-size: 14px;
+  border: 1px solid #89a8e6;
+  margin-bottom: -1px;
+  color: #254156;
+  outline: none;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+#PageTabs a:hover {
+  background: #f3faff;
+  text-decoration: none;
+  border: 1px solid #5b7099;
+  border-bottom: none;
+}
+
+#PageTabs a.Active:link,#PageTabs a.Active:visited {
+  background: #3B5998;
+  color: #FFF;
+  font-weight: bold;
+}
+
+#QuestionTabs {
+  border-bottom: 1px solid #888;
+  padding: 3px 10px 0px;
+  margin-bottom: -1px;
+  z-index: 25;
+  position: relative;
+}
+
+#QuestionTabs a:link,#QuestionTabs a:visited {
+  display: inline-block;
+  padding: 3px 15px;
+  background: #FFF;
+  font-size: 14px;
+  border: 1px solid #888;
+  margin-bottom: -1px;
+  color: #555;
+  outline: none;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+#QuestionTabs a:hover {
+  background: #EEE;
+  text-decoration: none;
+  border: 1px solid #555;
+  border-bottom: none;
+}
+
+#QuestionTabs a.Active:link,#QuestionTabs a.Active:visited {
+  background: #FFF;
+  color: #333;
+  font-weight: bold;
+  border-bottom: 1px solid #FFF;
+}
+
+#QuestionTabs a.Active:hover {
+  border: 1px solid #888;
+  border-bottom: 1px solid #FFF;
+}
+
+#EmptyQuestions {
+  border: 1px solid #CCC;
+  padding: 10px 5px;
+  margin: 10px;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+}
+
+#EmptyQuestions br {
+  margin-bottom: 5px;
+}
+
+#SubmissionCredits,#QuestionInfo {
+  padding: 0px 5px;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+#PostSolution {
+  padding: 5px 0px;
+}
+
+#PostSolutionForm {
+  display: none;
+}
+
+#PostSolutionButtonBlock {
+  background: #FFFCE3;
+  border: 1px solid #ffeabf;
+  margin: 0px 0px 5px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-box-shadow: 0px 0px 3px #CCC;
+  -moz-box-shadow: 0px 0px 3px #CCC;
+}
+
+#PostSolutionButtonBlock a:link,#PostSolutionButtonBlock a:visited {
+  color: #00C;
+}
+
+#AddQuestionsNotice {
+  background: #FFFCE9;
+  padding: 3px 10px;
+  text-align: center;
+  border: 1px solid #FFEABF;
+}
+
+.QuestionBlock,.CaseletDisplay,.DiscussionsContainer {
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 10px;
+  margin: 0px;
+  border: 1px solid #DDD;
+}
+
+.CaseletDisplay {
+  margin: 10px 0px;
+  width: 520px;
+  overflow: auto;
+}
+
+.QuestionDisplay {
+  margin: 0px 0px 5px;
+  padding: 0px 0px 10px;
+  border-bottom: 1px dashed #DDD;
+  width: 510px;
+  overflow: auto;
+}
+
+.DiscussionsContainer {
+  margin-top: 15px;
+}
+
+.DiscussionsContainer h3 {
+  font-style: italic;
+  border-bottom: 1px dashed #AAA;
+  margin: 0px;
+  margin-bottom: 3px;
+  padding-bottom: 3px;
+}
+
+.SolutionBlock {
+  border-top: 1px solid #DDD;
+  border-bottom: 1px solid #DDD;
+  margin-bottom: -1px;
+  padding: 8px 3px;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.TextBoxLabels {
+  color: #666;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.RatingsBlock {
+  float: left;
+  width: 50px;
+}
+
+.Rating {
+  width: 40px;
+  margin: auto;
+  padding: 0px;
+}
+
+.Rating .Number {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px 0px 5px;
+}
+
+.Rating .Text,.Rating .SubmittedText {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 0px 0px 0px;
+}
+
+.ThanksBlock {
+  border: 1px solid #006400;
+  margin-bottom: -1px;
+}
+
+.ThanksBlock .Number {
+  color: #006400;
+}
+
+.ThanksBlock .Text {
+  background: #006400;
+  color: #FFF;
+}
+
+.ThanksBlock .SubmittedText {
+  background: #008000;
+  color: #FFF;
+}
+
+.ThankUp {
+  background: url('../images/up-down.png') no-repeat 0px 0px;
+  height: 15px;
+  width: 40px;
+  margin: auto;
+  display: block;
+}
+
+.GroansBlock {
+  border: 1px solid #640000;
+}
+
+.GroansBlock .Number {
+  color: #640000;
+}
+
+.GroansBlock .Text {
+  background: #640000;
+  color: #FFF;
+}
+
+.GroansBlock .SubmittedText {
+  background: #800000;
+  color: #FFF;
+}
+
+.GroanDown {
+  background: url('../images/up-down.png') no-repeat 0px -15px;
+  height: 15px;
+  width: 40px;
+  margin: auto;
+  display: block;
+}
+
+.SolutionContent {
+  margin-left: 55px;
+}
+
+.SolutionContent .SolutionText {
+  width: 450px;
+  overflow: auto;
+  margin-bottom: 8px;
+}
+
+.PostInfoTable {
+  width: 450px;
+}
+
+.QuestionsNavigation {
+  border: 1px solid #DDDDDD;
+  margin-bottom: 5px;
+  padding: 4px 10px;
+  text-align: right;
+}
+
+.QuestionsAction {
+  border: 1px solid #DDDDDD;
+  margin-bottom: 5px;
+  padding: 4px 10px;
+}
+
+.QuestionsNavigation a:link,.QuestionsNavigation a:visited, .QuestionsAction a:link,.QuestionsAction a:visited {
+  color: #00C;
+  font-size: 12px;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+.PostInfo {
+  float: right;
+  padding: 0px 5px 5px 5px;
+  border: 1px solid #CCC;
+  margin-bottom: 3px;
+}
+
+.PostInfo a:link,.PostInfo a:visited {
+  color: #00C;
+  font-weight: bold;
+}
+
+.PostInfo .AvatarBlock {
+  float: left;
+  width: 45px;
+  overflow: hidden;
+}
+
+.PostInfo .PostTime {
+  color: #333;
+  font-size: 10px;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+.AvatarImage {
+  border: 1px solid #888;
+  padding: 1px;
+  display: inline-block;
+}
+
+a.TGLink:link,a.TGLink:visited {
+  font-size: 12px;
+  display: inline-block;
+  color: #2F4F4F;
+  border: 1px solid #FFEABF;
+  background: #FFFCE3;
+  padding: 2px 10px;
+}
+
+a.TGLink:hover {
+  background: #FFF;
+  text-decoration: none;
+  border: 1px solid #FFEABF;
+  outline: none;
+  position: relative;
+  z-index: 10;
+}
+
+a.TGLinkActive:link,a.TGLinkActive:visited {
+  border-bottom: 1px solid #FFFCE3;
+}
+
+a.TGLinkActive:hover {
+  border-bottom: 1px solid #FFFCE3;
+}
+
+.TGList {
+  display: none;
+  padding: 5px;
+  border: 1px solid #FFEABF;
+  background: #FFFCE3;
+  margin-top: -1px;
+  font-size: 12px;
+  position: relative;
+  z-index: 9;
+}
+
+.SolutionContent .SolutionBody {
+  border-bottom: 1px dotted #CCC;
+  min-height: 120px;
+  padding-bottom: 5px;
+  margin-bottom: 3px;
+  padding-bottom: 5px;
+}
+
+.SolutionContent .PostStat {
+  color: #403939;
+  font-size: 12px;
+  float: right;
+}
+
+.SolutionContent .SolutionComments {
+  color: #666;
+  font-size: 13px;
+}
+
+.SolutionContent .SolutionActions {
+  font-size: 12px;
+}
+
+.SolutionContent a:link,.SolutionContent a:visited {
+  
+}
+
+.SolutionActions td {
+  padding: 0px 8px 0px 0px;
+}
+
+.AddAComment {
+  display: none;
+  background: #E0E0E0;
+  border: 1px solid #999;
+}
+
+a.FavoriteActiveSmall:link,a.FavoriteActiveSmall:visited {
+  display: inline-block;
+  background: url(../images/favorites-small.png) no-repeat 0px -14px;
+  width: 16px;
+  height: 14px;
+}
+
+a.FavoriteActiveSmall:hover {
+  display: inline-block;
+  background: url(../images/favorites-small.png) no-repeat 0px -28px;
+  width: 16px;
+  height: 14px;
+}
+
+.FavoriteInActiveSmall {
+  display: inline-block;
+  background: url(../images/favorites-small.png) no-repeat 0px 0px;
+  width: 16px;
+  height: 14px;
+}
+
+a.FavoriteActive:link,a.FavoriteActive:visited {
+  display: inline-block;
+  background: url(../images/favorites-large.png) no-repeat 0px -24px;
+  width: 24px;
+  height: 24px;
+}
+
+a.FavoriteActive:hover {
+  display: inline-block;
+  background: url(../images/favorites-large.png) no-repeat 0px -48px;
+  width: 24px;
+  height: 24px;
+}
+
+.FavoriteInActive {
+  display: inline-block;
+  background: url(../images/favorites-large.png) no-repeat 0px 0px;
+  width: 24px;
+  height: 24px;
+}
+
+.SolutionComments .Comment {
+  margin-bottom: 3px;
+  padding-left: 20px;
+  background: url(../images/comment-unknown.png) no-repeat 1px 2px;
+}
+
+a.ShowAllComments:link,a.ShowAllComments:visited {
+  color: #00C;
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.Comment a:link,.Comment a:visited {
+  color: #00C;
+}
+
+.AreaBlock h3 {
+  margin: 0px;
+  color: #555;
+  padding: 3px 10px;
+  background: #fff1d4;
+  border: 1px solid #ffeabf;
+  cursor: default;
+  border-radius: 10px 10px 0px 0px;
+  -moz-border-radius: 10px 10px 0px 0px;
+}
+
+.TopicsBlock {
+  margin: 5px 8px;
+}
+
+.TopicContainer {
+  border-bottom: 1px dotted #ffeabf;
+  padding: 6px 4px;
+  margin: 0px;
+}
+
+.TopicContainer:hover {
+  background: #fffef3;
+}
+
+.TopicContainer .TopicStats {
+  float: right;
+  color: #555;
+}
+
+.TopicContainer h4 {
+  margin: 0px;
+  border: none;
+}
+
+.TopicContainer a:link,.TopicContainer a:visited {
+  color: #254156;
+}
+
+.TopicContainer a:hover {
+  color: #3B5998;
+}
+
+.RoundButtons {
+  font-size: 12px;
+  color: #333;
+  border: 1px solid #AAA;
+  background: #ffffff;
+  padding: 1px 15px;
+  -moz-box-shadow: 0 0 8px #CCC;
+  -webkit-box-shadow: 0px 0px 8px #CCC;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.StatTitle {
+  color: #555;
+  font-style: italic;
+}
+
+.StatData {
+  color: #333;
+  font-weight: bold;
+}
+
+.Notice {
+  background: #FFFCE3;
+  border: 1px solid #EBDDB4;
+  padding: 5px;
+  border-radius: 8px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  -moz-border-radius: 8px;
+  -webkit-box-shadow: 0px 0px 8px #CCC;
+  -moz-box-shadow: 0px 0px 8px #CCC;
+}
+
+.MenuIcons {
+  background-image: url(../images/menu.png);
+  background-repeat: no-repeat;
+  background-position: -5px -5px;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: bottom;
+  margin: 0px 4px 0px 3px;
+}
+
+.QuestionBit {
+  padding: 5px 10px 10px;
+  border-bottom: 1px dotted #ffd580;
+}
+
+.QuestionBitCorrect {
+  background: #F6FFF2;
+}
+
+.QuestionBitWrong {
+  background: #fff5f3;
+}
+
+.QuestionBit:hover,.QuestionBitCorrect:hover,.QuestionBitWrong:hover {
+  background: #fffef3;
+}
+
+.QuestionBit h2 {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 17px;
+}
+
+.QuestionStats,.QuestionManipulation {
+  padding: 0px 15px;
+  font-size: 11px;
+}
+
+.QuestionStats .StatsBits {
+  padding: 1px 0px;
+}
+
+.QuestionStats .SmallMessage {
+  padding: 1px 0px;
+  color: #555;
+  font-style: italic;
+}
+
+.StatsBits .cl1 {
+  font-style: italic;
+  color: #254156;
+}
+
+/* Icons Start */
+.Active .HomeIcon {
+  background-position: -52px -5px;
+}
+
+.HomeIcon {
+  background-position: -52px -31px;
+}
+
+.Active .ActivityIcon {
+  background-position: -148px -5px;
+}
+
+.ActivityIcon {
+  background-position: -148px -31px;
+}
+
+.Active .RecommendIcon {
+  background-position: -30px -5px;
+}
+
+.RecommendIcon {
+  background-position: -30px -31px;
+}
+
+.Active .LearnModeIcon {
+  background-position: -197px -5px;
+}
+
+.LearnModeIcon {
+  background-position: -197px -31px;
+}
+
+.Active .FavoriteIcon {
+  background-position: -290px -5px;
+}
+
+.FavoriteIcon {
+  background-position: -290px -31px;
+}
+
+.Active .ProfileIcon {
+  background-position: -245px -5px;
+}
+
+.ProfileIcon {
+  background-position: -245px -31px;
+}
+
+.Active .PageIcon {
+  background-position: -125px -5px;
+}
+
+.PageIcon {
+  background-position: -125px -31px;
+}
+
+.Active .InterviewIcon {
+  background-position: -221px -5px;
+}
+
+.InterviewIcon {
+  background-position: -221px -31px;
+}
+
+.InputButtons {
+  border: 1px solid #333;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: #333;
+  background: #FFF;
+  padding: 2px 20px;
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+}
+
+.SortForm select {
+  font-size: 10px;
+  border: 1px solid #AAA;
+  padding: 2px;
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+}
+
+/* Icons End */
+.MegaMenuWrapper {
+  
+}
+
+.MegaMenu {
+  width: 946px;
+  margin: auto;
+}
+
+.MegaMenuText {
+  float: right;
+  color: #FFF;
+  padding: 7px 10px;
+}
+
+.MegaMenuText a:link,.MegaMenuText a:visited {
+  color: #FFF;
+}
+
+.SponsorBlock {
+  width: 234px;
+  height: 60px;
+  margin: 5px auto;
+  border: 1px solid #888;
+  background: #DDD;
+}
+
+.LoginBlock {
+  width: 320px;
+  height: 60px;
+  margin: 5px auto;
+  border: 1px solid #888;
+  background: #DDD;
+}
+
+.OptionsContainer {
+  padding: 0px 0px 0px 10px;
+}
+
+.SolvedOptions td {
+  padding: 3px 5px;
+}
+
+td.OptionStats {
+  font-size: 12px;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  min-width: 210px;
+  /*width: expression(this.width<210?"210px":this.width);*/
+}
+
+td.OptionStats strong {
+  font-size: 10px;
+  color: #888;
+}
+
+td.OptionStats .Number {
+  
+}
+
+.OptionsNumbering {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  color: #888;
+}
+
+.BarHolder {
+  display: inline-block;
+  width: 100px;
+  height: 14px;
+  background: #F7F7F7;
+  border: 1px solid #BBB;
+  vertical-align: middle;
+}
+
+.BarHolder * {
+  display: inline-block;
+  height: 14px;
+}
+
+.BarHolder .Number {
+  font-size: 12px;
+}
+
+.BarHolderCorrectAnswer {
+  border: 1px solid #51CC51;
+}
+
+.BarHolderWrongAnswer {
+  border: 1px solid #C00;
+}
+
+.BarHolder .BarProgress {
+  background: #BBB;
+}
+
+.BarHolder .BarCorrectAnswer {
+  background: #51CC51;
+}
+
+.BarHolder .BarWrongAnswer {
+  background: #cc0000;
+}
+
+.TickSprite {
+  display: inline-block;
+  background: url('../images/tick-cross.gif') 0px 0px no-repeat;
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+}
+
+.CrossSprite {
+  display: inline-block;
+  background: url('../images/tick-cross.gif') 0px -15px no-repeat;
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+}
+
+.OptionsDisplay {
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 16px;
+}
+
+.OptionsBit {
+  padding: 3px 0px;
+  margin: 2px 5px;
+}
+
+.OptionsBitHover {
+  background: #fff7c8;
+}
+
+.OptionsBitSelected {
+  background: #fceea5;
+}
+
+.OptionsBit label {
+  cursor: pointer;
+  display: block;
+}
+
+.OptionsBit label span {
+  display: block;
+  margin-left: 20px;
+}
+
+.OptionsBit input {
+  line-height: 14px;
+  vertical-align: top;
+  display: block;
+  float: left;
+  margin: 0;
+}
+
+.OptionsDescriptionBlock {
+  max-width: 250px;
+  /*width: expression(this.width > 250 ? "250px" : this.width);*/
+  overflow: auto;
+}
+
+/*Footer Starts*/
+#FooterTD {
+  height: 46px;
+}
+
+#Footer {
+  background-color: #828282;
+  width: 960px;
+  text-align: center;
+  padding: 15px 0px;
+  color: #FFF;
+  font-size: 16px;
+  margin: auto;
+  margin-top: 10px;
+}
+
+#Footer span {
+  margin: 0px;
+  padding: 0px;
+  display: inline-block;
+}
+
+#Footer span a:link,#Footer span a:visited {
+  color: #FFF;
+  font-weight: bold;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 3px 10px;
+}
+
+#Footer span a:hover {
+  color: #333;
+  background: #BDBDBD;
+}
+
+.FooterTD {
+  vertical-align: bottom;
+}
+
+.CopyrightFooter {
+  text-align: center;
+  font-size: 10px;
+  padding: 5px 0px 0px;
+}
+
+.CopyrightFooter a:link,.CopyrightFooter a:visited {
+  font-size: 10px;
+  display: inline;
+  color: #FFF;
+  font-weight: bold;
+}
+
+/*Footer Ends*/ /*Pagination Starts*/
+.Pagination {
+  
+}
+
+.Pagination .pagination {
+  border: 1px solid #B1CBFF;
+  padding: 5px 2px;
+  display: inline-block;
+}
+
+.Pagination .pagination .current {
+  color: #7799DD;
+  border: 1px solid #B1CBFF;
+  padding: 2px 4px;
+  cursor: default;
+}
+
+.Pagination .pagination a:link,.Pagination .pagination a:visited {
+  color: #FFF;
+  background: #254156;
+  border: 1px outset #BBB;
+  padding: 2px 5px;
+  text-decoration: none;
+}
+
+.Pagination .pagination a:hover {
+  background: #407094;
+}
+
+.Pagination .pagination a:active {
+  border: 1px inset #BBB;
+}
+
+.IAgreeDiv {
+  padding: 3px 10px;
+  font-size: 13px;
+  border: 1px solid #888;
+  margin: 2px 0px 10px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+}
+
+#Disclaimer {
+  height: 120px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid #888;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background: #FFF;
+  text-align: justify;
+  margin-bottom: 10px;
+}
+
+.FormLabel {
+  font-size: 14px;
+  padding: 1px 5px 1px;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid #EFEFEF;
+}
+
+#QuestionForm a:link, #QuestionForm a:visited {
+}
+
+#QuestionForm textarea, #QuestionForm select {
+  border: 1px solid #888;
+}
+
+#OptionFields {
+  width: 520px;
+  font-size: 14px;
+}
+
+#OptionFields td {
+  padding: 3px;
+}
+
+#OptionFields a:link, #OptionFields a:visited{
+  font-size: 12px;
+}
+
+.InputTextArea {
+  width: 334px;
+  height: 14px;
+  padding: 8px;
+  font-size: 12px;
+  margin: 0px;
+  border: 1px solid #888;
+  overflow: auto;
+}
+
+.wysiwyg {
+  525px;
+}
+
+#OptionFields .wysiwyg {
+  width: 350px;
+}
+
+#OptionFields iframe {
+  height: 30px;
+}
+
+.ButtonContainer {
+  padding: 5px 15px;
+}
+
+.ButtonContainer input {
+  margin: 2px 5px;
+}
+/*Pagination Ends*/ /*Report Invalid Style Starts*/
+a.ReportButton,a.EditButton {
+  display: inline-block;
+  padding: 2px 8px;
+  /*  border: 1px solid #888;*/
+  color: #333;
+  font-size: 10px;
+}
+
+a.ReportButtonClicked {
+  background: #888;
+  color: #FFF;
+}
+
+.ReportAbuseForm {
+  border: 2px solid #888;
+  position: absolute;
+  background: #FFF;
+  display: none;
+}
+
+.ReportAbuseForm a.SubmitReport {
+  color: #FFF;
+  text-decoration: none;
+  border: 2px outset #BBB;
+  background: #254156;
+  display: inline-block;
+  padding: 3px 10px;
+}
+
+.ReportFormHandle {
+  background: #888;
+  margin: 0px;
+  padding: 2px 5px;
+  text-align: right;
+}
+
+.ReportFormHandle a {
+  color: #fff;
+  font-size: 10px;
+  text-decoration: none;
+}
+
+.ReportFormBody {
+  font-size: 12px;
+  padding: 10px 15px;
+}
+
+.ReportAbuseForm a.SubmitReport:active {
+  border: 2px inset #BBB;
+}
+
+.ReportFormBody div {
+  padding: 3px 0px 2px 0px;
+}
+
+.ReportAbuseForm input {
+  margin: 0px 3px 0px 0px;
+}
+
+.ReportMessageDiv,.ReportErrorDiv {
+  padding: 3px 10px;
+}
+
+.ReportErrorDiv ul {
+  margin: 0px;
+  padding: 3px 10px;
+  list-style: none;
+  color: #C00;
+  background: #FFFFEE;
+  border: 1px solid #ffa500;
+}
+
+.ReportErrorDiv li {
+  color: #C00;
+}
+
+/*Report Invalid Style Ends*/ /*Profile Styling Starts*/
+h2.ProfileHeader {
+  font-size: 16px;
+  padding: 5px 8px 3px;
+  border-bottom: 1px dashed #CCC;
+}
+
+.ProfileTabHolder,.ActivityTabHolder {
+  border-bottom: 1px solid #89a8e6;
+  padding: 3px 10px 0px;
+  margin-bottom: 5px;
+}
+
+.ProfileTabHolder a:link,.ProfileTabHolder a:visited,.ActivityTabHolder a:link,.ActivityTabHolder a:visited
+  {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #FFF;
+  font-size: 14px;
+  border: 1px solid #89a8e6;
+  margin-bottom: -1px;
+  color: #254156;
+  outline: none;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+.ProfileTabHolder a:hover,.ActivityTabHolder a:hover {
+  background: #f3faff;
+  text-decoration: none;
+  border: 1px solid #5b7099;
+  border-bottom: none;
+}
+
+.ProfileTabHolder a.Active:link,.ProfileTabHolder a.Active:visited,.ActivityTabHolder a.Active:link,.ActivityTabHolder a.Active:visited
+  {
+  background: #3B5998;
+  color: #FFF;
+  font-weight: bold;
+}
+
+.ProfileTabBody {
+  font-size: 14px;
+}
+
+.ProfileAvatarHolder {
+  width: 100px;
+  float: left;
+  text-align: center;
+  font-size: 12px;
+  padding: 5px;
+}
+
+.ProfileAvatarHolder .UserName {
+  font-size: 10px;
+  overflow: hidden;
+  padding: 5px;
+}
+
+.ProfileAvatarHolder .UserName a:link,.ProfileAvatarHolder .UserName a:visited
+  {
+  color: #00C;
+}
+
+.ProfileAvatarHolder img {
+  max-width: 80px;
+}
+
+.ProfileDataOverview {
+  margin-left: 110px;
+  padding: 5px 0px;
+  vertical-align: middle;
+}
+
+.ProfileDataOverview .Number {
+  color: #696969;
+  font-size: 24px;
+  font-family: "Trebuchet MS", Arial, Verdana;
+}
+
+.ProfileData {
+  padding: 5px 15px;
+  clear: left;
+}
+
+.ProblemLink {
+  padding: 5px 0px 10px 0px;
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: 13px;
+  color: #888;
+}
+
+.Rankings, .Badges {
+  padding: 0px 5px;
+  background: #F2F2F2;
+  border: 1px solid #CCC;
+  margin-bottom: 15px;
+  -moz-border-radius: 5px;
+  -webkit-box-shadow: 0px 0px 8px #CCC;
+  -moz-box-shadow: 0px 0px 8px #CCC;
+}
+
+.RankingHead, .BadgesHead {
+  font-size: 16px;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding: 3px 10px 2px;
+}
+
+.Rankings .RankBlock, .Badges .BadgesBlock {
+  padding: 5px 0px;
+}
+
+.Rankings .Rank {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid #888;
+  text-transform: uppercase;
+  width: 100px;
+  text-align: center;
+  color: #FFF;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-box-shadow: 0px 0px 8px #B8860B;
+  -moz-box-shadow: 0px 0px 8px #B8860B;
+}
+
+.Rankings .RankHolder {
+  font-size: 12px;
+  display: inline-block;
+}
+
+.Rankings .ReputationInTopics {
+  font-size: 12px;
+  display: inline-block;
+}
+
+.ReputationInTopics a:link, .ReputationInTopics a:visited {
+  color: #00C;
+}
+
+.ActivityBitData {
+    padding: 5px 3px;
+}
+
+.ActivityBitData .StatsBits {
+  margin-left: 15px;
+}
+
+.ActivityTime {
+    font-style: italic;
+    text-align: right;
+    color:#777;
+}
+
+.ActivityBit {
+  padding: 5px 10px 10px;
+  border-bottom: 1px dotted #99bbff;
+}
+
+.ActivityBit:hover {
+  background: #f3faff;
+}
+
+.ActivityBit h2 {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 17px;
+}
+
+.NoActivity {
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: 'Lucida Grande', 'TrebuchetMS', Arial;
+  color: #555;
+}
+
+.FormErrors {
+  font-size: 14px;
+  color: #C00;
+  background: #fff2f2;
+  border: 1px solid #C00;
+  padding: 10px;
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+}
+
+.FormErrors ul {
+  margin: 5px 0px 0px;
+  padding-left: 16px;
+}
+
+#TagButtonContainer {
+  padding: 5px 0px;
+  text-align: right;
+}
+
+.TagLabel {
+  padding: 3px 4px;
+  display: inline-block;
+  border: 1px solid #EEE;
+  background: #F2F2F2;
+  margin: 3px 6px 3px 0px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+}
+
+.TagLabel:hover {
+  border: 1px solid #AAA;
+  background: #F7F7F7;
+}
+
+.TagLabel input {
+  margin: 0px;
+  vertical-align: middle;
+}
+
+.TagLabelChecked {
+  background: #FFFCE3;
+  border: 1px solid #EBDDB4;
+}
+
+.TagInput {
+  padding: 3px 4px;
+  border: 1px solid #888;
+  margin: 3px 6px 3px 0px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  font-size: 10px;
+}
+
+.AdminActions {
+  text-align: right;
+}
+
+.AdminActions a:link, .AdminActions a:visited {
+  color: #00C;
+}
+
+#QuestionTags {
+  margin-bottom: 5px;
+}
+
+#AddTags {
+  display: none;
+}
+
+.InstructionsDiv {
+  color: #27537a;
+  margin-bottom: 10px;
+  padding: 2px 0px 4px;
+  border-bottom: 1px solid #CCC;
+}
+
+a.TagLink:link, a.TagLink:visited {
+  display: inline-block;
+  background: #EFEFEF;
+  color: #666;
+  text-decoration: none;
+  padding: 3px 15px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+}
+
+a.TagLink:hover {
+  background: #888;
+  color: #FFF;
+}
+
+.Badge {
+  color: #FFF;
+  padding: 3px 15px;
+  margin: 10px 5px;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-box-shadow: 0 0 5px #888;
+  -moz-box-shadow: 0 0 5px #888;
+}
+
+.Druid {
+  background: #8B756B;
+}
+
+.Marksman {
+  background: #8B6B82;
+}
+
+.Minister {
+  background: #6b8b8b;
+}
+
+.Artisan {
+  background: #6b8c6b;
+}
+
+.Craftsman {
+  background: #8B7B8B;
+}
+
+.Philosopher {
+  background: #8B4C39;
+}
+
+.MarathonWarrior {
+  background: #458B74;
+}
+
+.Soldier {
+  background: #4A708B;
+}
+
+.Warlord {
+  background: #8B7D6B;
+}
+
+.tooltip{
+   position: absolute;
+   padding: 5px;
+   z-index: 2;
+   color: #303030;
+   background-color: #f5f5b5;
+   border: 1px solid #DECA7E;
+   font-family: sans-serif;
+   font-size: 12px;
+   line-height: 18px;
+   text-align: center;
+}
+
+.BadgeInfo {
+  display: none;
+}
+
+#NewTag{
+  
+}
+/*Profile Styling Ends*/

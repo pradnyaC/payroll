@@ -1,0 +1,22 @@
+{% block body %}
+<div id="BreadCrumbs">
+  <form action="/login" method="post">
+    {{ xsrf_form_html() }}
+      <table>
+        <tr>
+          <td>Login</td>
+        </tr>
+        <tr>
+          <td>User name:</td>
+          <td><input type="text" name="user_login"/></td>
+        </tr>
+      </table>
+      <input type="hidden" name="request_object" value="{{ request }}"/>
+      <input type="submit" value="Login">
+  </form>
+	{% end %}
+</div>
+
+{% block page_title %}
+  PaGaLGuY Payroll Login
+{% end %}

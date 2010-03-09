@@ -1,0 +1,21 @@
+menu:
+  0:
+    title: New user
+    url: /payroll/user/new
+    icon: HomeIcon
+  1:
+    title: All users
+    url: /payroll/users
+    icon: LearnModeIcon
+  2:
+    title: Favorites
+    url: /prep/favorites/
+    icon: FavoriteIcon
+  3:
+    title: My Profile
+    url: /prep/profile/
+    icon: ProfileIcon
+  4:
+    title: Live Activity
+    url: /prep/activity_stream
+    icon: ActivityIcon

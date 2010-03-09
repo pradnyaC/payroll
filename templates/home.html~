@@ -1,0 +1,14 @@
+
+{% block body %}
+<div id="BreadCrumbs">
+  <table>
+    <tr>
+      <td>Add New Employee</td>
+    </tr>
+  </table>
+	{% end %}
+</div>
+
+{% block page_title %}
+  PaGaLGuY Payroll
+{% end %}
