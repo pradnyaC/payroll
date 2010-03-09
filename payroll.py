@@ -42,10 +42,13 @@ class Application(tornado.web.Application):
       (r"" + config['application_configuration']['base_path'] + "/", HomeHandler),
       (r"" + config['application_configuration']['base_path'] + "/home", HomeHandler),
       (r"" + config['application_configuration']['base_path'] + "/login", GoogleHandler),
+      (r"" + config['application_configuration']['base_path'] + "/users", UserHandler),
       (r"" + config['application_configuration']['base_path'] + "/user/new", NewUserHandler),
       (r"" + config['application_configuration']['base_path'] + "/user/([0-9]+)/edit", EditUserHandler),
-      (r"" + config['application_configuration']['base_path'] + "/salary/([0-9]+)", NewSalaryHandler),
-      (r"" + config['application_configuration']['base_path'] + "/users", UserHandler),
+      (r"" + config['application_configuration']['base_path'] + "/salary/([0-9]+/new)", NewSalaryHandler),
+      (r"" + config['application_configuration']['base_path'] + "/salary/([0-9]+)/edit", EditSalaryHandler),
+      (r"" + config['application_configuration']['base_path'] + "/leave", LeaveHandler),
+      (r"" + config['application_configuration']['base_path'] + "/salary_calc", SalaryCalcHandler),
       ]
       
     settings = dict(
@@ -66,6 +69,17 @@ class BaseHandler(tornado.web.RequestHandler):
   @property
   def db(self):
     return self.application.db
+  
+  def get_current_user(self):
+    f = open("production_code")
+    code = f.read()
+    f.close()
+    exec(code)
+    if not user_id: user_id = 0
+    if int(user_id) == 0:
+      pass
+    else:
+      return users_module.get_user_details(self.db, user_id)
 
 class HomeHandler(BaseHandler):
   def get(self):
@@ -215,12 +229,13 @@ class NewSalaryHandler(BaseHandler):
 class EditSalaryHandler(BaseHandler):
   def get(self, user_id):
     sal_details = users_module.get_salary_details(self.db, user_id)
-    self.render("edit_salary.html", sal_details=sal_details, errors="")
+    user_name = users_module.get_user_details(self.db, user_id)['name']
+    self.render("edit_salary.html", user_id=user_id, user_name=user_name, sal_details=sal_details, errors="")
 
   def post(self, user_id):
     errors = []
     if not self.request.arguments.has_key("basic") : errors.append("Please Enter basic salary")
-    if not self.request.arguments.has_key("hra") : errors.append("Please Enter HRA")
+    if not self.request.arguments.has_key("HRA") : errors.append("Please Enter HRA")
     if not self.request.arguments.has_key("conveyence") : errors.append("Please Enter conveyence")
     if not self.request.arguments.has_key("medical") : errors.append("Please Enter medical")
     if not self.request.arguments.has_key("pt") : errors.append("Please Enter PT")
@@ -228,18 +243,69 @@ class EditSalaryHandler(BaseHandler):
     if not self.request.arguments.has_key("monthly_leaves") : errors.append("Please Enter monthly_leaves")
     if not self.request.arguments.has_key("vacation_leaves") : errors.append("Please Enter vacation_leaves")
     
+    user_details = users_module.get_user_details(self.db, user_id)
+    user_name = user_details['name']
+    post_data = self.request.arguments
+    
     if len(errors) > 0: 
       errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
       sal_details = {}
       for key in post_data:
         sal_details[key] = post_data[key][0]
-      self.render("edit_salary.html", sal_details=sal_details, errors=errors_message)
+      self.render("edit_salary.html", user_id=user_id, user_name=user_name, sal_details=sal_details, errors=errors_message)
     else:
-      users_module.edit_salary(self.db, user_id, self.get_argument("basic"), self.get_argument("hra"), self.get_argument("conveyence"), self.get_argument("medical"), self.get_argument("pt"), self.get_argument("tds"), self.get_argument("monthly_leaves"), self.get_argument("vacation_leaves"))
+      users_module.edit_salary(self.db, user_id, self.get_argument("basic"), self.get_argument("HRA"), self.get_argument("conveyence"), self.get_argument("medical"), self.get_argument("pt"), self.get_argument("tds"), self.get_argument("monthly_leaves"), self.get_argument("vacation_leaves"))
     
       #redirect to the page with all users
       self.redirect("/payroll/users")
 
+class LeaveHandler(BaseHandler):
+  def get(self):
+    user = self.get_current_user()
+    self.render("leave_sheet.html", user=user, errors="")
+
+  def post(self):
+    user = self.get_current_user()
+    errors = []
+    if not self.request.arguments.has_key("month") : errors.append("Please select a month")
+
+    monthly_dates = ""
+    vacation_dates = ""
+    if not self.request.arguments.has_key("monthly_total") : 
+      errors.append("Please Enter monthly_total")
+    else:
+      if int(self.get_argument("monthly_total")) > 0:
+        if not self.request.arguments.has_key("monthly_dates"): 
+          errors.append("Please Enter monthly_dates") 
+        else:
+          monthly_dates = self.get_argument("monthly_dates")
+    
+    if not   self.request.arguments.has_key("vacation_total") : 
+      errors.append("Please Enter vacation_total")
+    else:
+      if (int(self.get_argument("vacation_total")) > 0):
+        if not self.request.arguments.has_key("vacation_dates"): 
+          errors.append("Please Enter vacation_dates")
+        else:
+          vacation_dates = self.get_argument("vacation_dates")
+
+    post_data = self.request.arguments
+    
+    if len(errors) > 0: 
+      errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
+      self.render("leave_sheet.html", user=user, post_data=self.request.arguments, errors=errors_message)
+    else:
+      users_module.add_leaves(self.db, user['id'], self.get_argument("month"), self.get_argument("monthly_total"), monthly_dates, self.get_argument("vacation_total"), vacation_dates)
+    
+      #redirect to the page with all users
+      self.redirect("/payroll/users")
+
+class SalaryCalcHandler(BaseHandler):
+  def get(self):
+    
+    #self.redirect("/payroll/users")
+    
+    
 def main():
   tornado.options.parse_command_line()
   http_server = tornado.httpserver.HTTPServer(Application())

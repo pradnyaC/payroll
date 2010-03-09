@@ -1,0 +1,81 @@
+{% extends "base.html" %} 
+{% block body %}
+{% if len(errors) > 0 %}
+  {{ errors }}
+{% end %}
+  <div>
+    <form action="/payroll/salary/{{user_id}}/edit" method="post" name="edit_salary">
+      {{ xsrf_form_html() }}
+      <div >
+        <table>
+          <tr>
+            <td>Employee Name:</td>
+            <td> {{user_name}}</td>
+          </tr>
+          <tr>
+            <td>Basic salary:</td> 
+            <td>
+              <textarea name="basic" id="basic" rows="1" cols="15">{% try %}{{ sal_details['basic'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>HRA</td> 
+            <td>
+              <textarea name="HRA" id="HRA" rows="1" cols="15">{% try %}{{ sal_details['HRA'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Conveyence</td> 
+            <td>
+              <textarea name="conveyence" id="conveyence" rows="1" cols="10">{% try %}{{ sal_details['conveyence'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Medical</td> 
+            <td>
+              <textarea name="medical" id="medical" rows="1" cols="10">{% try %}{{ sal_details['medical'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div>
+        <table>
+          <tr>
+            <td>Professional Tax:</td> 
+            <td>
+              <textarea name="pt" id="pt" rows="1" cols="15">{% try %}{{ sal_details['pt'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>TDS:</td> 
+            <td>
+              <textarea name="tds" id="tds" rows="1" cols="15">{% try %}{{ sal_details['tds'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div>
+        <table>
+          <tr>
+            <td>Monthly leaves:</td> 
+            <td>
+              <textarea name="monthly_leaves" id="monthly_leaves" rows="1" cols="15">{% try %}{{ sal_details['monthly_leaves'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Vacation leaves (per 6 months):</td> 
+            <td>
+              <textarea name="vacation_leaves" id="vacation_leaves" rows="1" cols="15">{% try %}{{ sal_details['vacation_leaves'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+        </table>
+      </div>
+      <input type="hidden" name="user_id" value={{ user_id }} />
+      <input type="submit" value="Submit">
+    </form>
+  	{% end %}
+  </div>
+
+{% block page_title %}
+  PaGaLGuY New user
+{% end %}

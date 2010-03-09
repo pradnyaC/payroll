@@ -4,7 +4,7 @@
   {{ errors }}
 {% end %}
   <div>
-    <form action="/payroll/salary/{{user['id']}}" method="post" name="new_salary">
+    <form action="/payroll/salary/{{user['id']}}/new" method="post" name="new_salary">
       {{ xsrf_form_html() }}
       <div >
         <table>

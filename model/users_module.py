@@ -34,7 +34,29 @@ def get_all_users(db):
 def add_salary(db, user_id, basic, hra, conveyence, medical, pt, tds, monthly_leaves, vacation_leaves):
   db.execute("INSERT INTO salary_structure (user_id, basic, hra, conveyence, medical, pt, tds, monthly_leaves, vacation_leaves) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", user_id, basic, hra, conveyence, medical, pt, tds, monthly_leaves, vacation_leaves)
 
+def edit_salary(db, user_id, basic, hra, conveyence, medical, pt, tds, monthly_leaves, vacation_leaves):
+  db.execute("UPDATE salary_structure SET basic=%s, HRA=%s, conveyence=%s, medical=%s, pt=%s, tds=%s, monthly_leaves=%s, vacation_leaves=%s WHERE user_id =%s", basic, hra, conveyence, medical, pt, tds, monthly_leaves, vacation_leaves, user_id)
 
+def add_leaves(db, user_id, month, monthly_total, monthly_dates, vacation_total, vacation_dates):
+  return db.execute("INSERT INTO leaves (user_id, month, monthly_total, monthly_dates, vacation_total, vacation_dates) VALUES (%s, %s, %s, %s, %s, %s)", user_id, month, monthly_total, monthly_dates, vacation_total, vacation_dates)
+
+def get_leave_details(db, user_id, month=None):
+  if not month:
+    return db.query("SELECT * FROM leaves WHERE user_id = %s", user_id)
+  else:
+    return db.query("SELECT * FROM leaves WHERE user_id = %s and month = %s", user_id, lower(month))
+
+def calculate_salary(db, month):
+  users = get_all_users(db)
+  user_ids = [for u['id'] in users]
+
+  sal_sheet = {}
+  for uid in user_ids:
+    sal_details = get_salary_details(db, uid)
+    leave_details = get_leave_details(db, user_id, month)[0]
+    sal_sheet[uid] = dict(sal_details, **leave_details)
+    
+    
 def user_login(request):
   consumer = Consumer(request, OpenIDStore())
   try:

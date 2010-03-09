@@ -1,0 +1,74 @@
+{% extends "base.html" %} 
+{% block body %}
+{% if len(errors) > 0 %}
+  {{ errors }}
+{% end %}
+  <div>
+    <form action="/payroll/leave" method="post" name="leave_form">
+      {{ xsrf_form_html() }}
+      <div >
+        <table>
+          <tr>
+            <td>Employee Name:</td>
+            <td> {{ user['name'] }}</td>
+          </tr>
+          <tr>
+            <td>Month:</td> 
+            <td>
+              <select name="month">
+                <option value="jan">Jan</option>
+                <option value="feb">Feb</option>
+                <option value="march">March</option>
+                <option value="apr">April</option>
+                <option value="may">May</option>
+                <option value="june">June</option>
+                <option value="july">July</option>
+                <option value="aug">August</option>
+                <option value="sept">September</option>
+                <option value="oct">October</option>
+                <option value="nov">November</option>
+                <option value="dec">December</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Monthly Account</td>
+          </tr>
+          <tr>
+            <td>Number of leaves</td> 
+            <td>
+              <textarea name="monthly_total" id="monthly_total" rows="1" cols="15">{% try %}{{ request.arguments['monthly_total'][0] }}{% except %}{{ 0 }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Dates</td> 
+            <td>
+              <textarea name="monthly_dates" id="monthly_dates" rows="1" cols="10">{% try %}{{ sal_details['monthly_dates'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Vacation Leave Account</td>
+          </tr>
+          <tr>
+            <td>Number of leaves</td> 
+            <td>
+              <textarea name="vacation_total" id="vacation_total" rows="1" cols="15">{% try %}{{ request.arguments['vacation_total'][0] }}{% except %}{{ 0 }}{% end %}</textarea> 
+            </td>
+          </tr>
+          <tr>
+            <td>Dates</td> 
+            <td>
+              <textarea name="vacation_dates" id="vacation_dates" rows="1" cols="10">{% try %}{{ request.arguments['vacation_dates'] }}{% except %}{{ '' }}{% end %}</textarea> 
+            </td>
+          </tr>
+        </table>
+      </div>
+      <input type="hidden" name="user_id" value={{ user['id'] }} />
+      <input type="submit" value="Submit">
+    </form>
+  	{% end %}
+  </div>
+
+{% block page_title %}
+  PaGaLGuY New user
+{% end %}
