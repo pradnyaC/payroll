@@ -49,6 +49,7 @@ class Application(tornado.web.Application):
       (r"" + config['application_configuration']['base_path'] + "/salary/([0-9]+)/edit", EditSalaryHandler),
       (r"" + config['application_configuration']['base_path'] + "/leave", LeaveHandler),
       (r"" + config['application_configuration']['base_path'] + "/salary_calc", SalaryCalcHandler),
+      (r"" + config['application_configuration']['base_path'] + "/users/admin", UserAdminHandler),
       ]
       
     settings = dict(
@@ -117,65 +118,29 @@ class UserHandler(BaseHandler):
   
 class NewUserHandler(BaseHandler):
   def get(self):
-    self.render("new_user.html", post_data=self.request.arguments, errors="")
+    user_compo = users_module.get_user_components(self.db)
+    self.render("new_user.html", post_data=self.request.arguments, user_compo=user_compo, errors="")
 
   def post(self):
     errors = []
     post_data = self.request.arguments
-    if not self.request.arguments.has_key("name") : errors.append("Please Enter Employee Name")
-    if not self.request.arguments.has_key("dob") : errors.append("Please Enter Date of Birth")
-    if not self.request.arguments.has_key("mobile") : errors.append("Please Enter Contact Number")
-    if not self.request.arguments.has_key("permanant_address") : errors.append("Please Enter permanant_address")
-    if not self.request.arguments.has_key("communication_address") : errors.append("Please Enter communication_address")
-    if not self.request.arguments.has_key("designation") : errors.append("Please Enter a Designation")
-    if not self.request.arguments.has_key("team") : errors.append("Please Enter Team")
-    if not self.request.arguments.has_key("joining") : errors.append("Please Enter joining date")
-    if not self.request.arguments.has_key("pan"): pan = None
-    else: pan = self.get_argument("pan")
+    user_compo = users_module.get_user_components(self.db)
+
+    for c in user_compo:
+      if int(c['required']) == 1:
+        if not self.request.arguments.has_key(c['name']) : errors.append("Please Enter "+ c['desc'])
+
+    post_data = self.request.arguments
+    user_details = {}
+    user_fields = [u['name'] for u in user_compo]
+    for key in post_data:
+      if key in user_fields:
+        user_details[key] = post_data[key][0]
+    
+    ### Specifically salary code ##
     if not self.request.arguments.has_key("salary_mode") : errors.append("Please Enter salary_mode")
     else:
       if self.get_argument("salary_mode") == "bank":
-        pay_mode = "bank"
-        if not self.request.arguments.has_key("accnt"): 
-          accnt_no = None
-          errors.append("Please Enter accnt number")
-        else:
-          accnt_no = self.get_argument("accnt")
-      else:
-        pay_mode = "cheque"
-        accnt_no = None
-
-    if len(errors) > 0: 
-      errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      self.render("new_user.html", post_data=self.request.arguments, errors=errors_message)
-    else:
-      user_id = users_module.new_user(self.db, self.get_argument("name"), self.get_argument("dob"), self.get_argument("mobile"),
-      self.get_argument("permanant_address"), self.get_argument("communication_address"), self.get_argument("designation"), self.get_argument("team"), self.get_argument("joining"), pan, pay_mode, accnt_no)
-      
-      #redirect to the page with all users
-      self.redirect("/payroll/salary/"+user_id)
-
-class EditUserHandler(BaseHandler):
-  def get(self, user_id):
-    user_details = users_module.get_user_details(self.db, user_id)
-    self.render("edit_user.html",user_id=user_id, user_details=user_details, errors="")
-
-  def post(self, user_id):
-    errors = []
-    post_data = self.request.arguments
-    if not self.request.arguments.has_key("name") : errors.append("Please Enter Employee Name")
-    if not self.request.arguments.has_key("DOB") : errors.append("Please Enter Date of Birth")
-    if not self.request.arguments.has_key("mobile") : errors.append("Please Enter Contact Number")
-    if not self.request.arguments.has_key("permanant_address") : errors.append("Please Enter permanant_address")
-    if not self.request.arguments.has_key("communication_address") : errors.append("Please Enter communication_address")
-    if not self.request.arguments.has_key("designation") : errors.append("Please Enter a Designation")
-    if not self.request.arguments.has_key("team") : errors.append("Please Enter Team")
-    if not self.request.arguments.has_key("joined_on") : errors.append("Please Enter joining date")
-    if not self.request.arguments.has_key("pan"): pan = None
-    else: pan = self.get_argument("pan")
-    if not self.request.arguments.has_key("pay_mode") : errors.append("Please Enter salary_mode")
-    else:
-      if self.get_argument("pay_mode") == "bank":
         pay_mode = "bank"
         if not self.request.arguments.has_key("account_no"): 
           accnt_no = None
@@ -185,44 +150,95 @@ class EditUserHandler(BaseHandler):
       else:
         pay_mode = "cheque"
         accnt_no = None
+    
+    ### ###
+    if len(errors) > 0: 
+      errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
+      self.render("new_user.html", user_compo=user_compo, user_details=user_details, errors=errors_message)
+    else:
+      user_id = users_module.new_user(self.db, user_compo, user_details)
+      #users_module.edit_user1(self.db)
+      
+      #redirect to the page with all users
+      self.redirect("/payroll/salary/"+str(user_id)+"/new")
+
+class EditUserHandler(BaseHandler):
+  def get(self, user_id):
+    user_details = users_module.get_user_details(self.db, user_id)
+    user_compo = users_module.get_user_components(self.db)
+    self.render("edit_user.html",user_id=user_id, user_compo=user_compo, user_details=user_details, errors="")
+
+  def post(self, user_id):
+    errors = []
+    post_data = self.request.arguments
+    user_compo = users_module.get_user_components(self.db)
+
+    for c in user_compo:
+      if int(c['required']) == 1:
+        if not self.request.arguments.has_key(c['name']) : errors.append("Please Enter "+ c['desc'])
+
+    post_data = self.request.arguments
+    user_details = {}
+    user_fields = [u['name'] for u in user_compo]
+    for key in post_data:
+      if key in user_fields:
+        user_details[key] = post_data[key][0]
+    
+    ### Specifically salary code ##
+    if not self.request.arguments.has_key("salary_mode") : errors.append("Please Enter salary_mode")
+    else:
+      if self.get_argument("salary_mode") == "bank":
+        pay_mode = "bank"
+        if not self.request.arguments.has_key("account_no"): 
+          accnt_no = None
+          errors.append("Please Enter accnt number")
+        else:
+          accnt_no = self.get_argument("account_no")
+      else:
+        pay_mode = "cheque"
+        accnt_no = None
+    ### ###
 
     if len(errors) > 0: 
       errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      user_details = {}
-      for key in post_data:
-        user_details[key] = post_data[key][0]
-      self.render("edit_user.html", user_id=user_id, user_details=user_details, errors=errors_message)
+      self.render("edit_user.html", user_id=user_id, user_compo=user_compo, user_details=user_details, errors=errors_message)
     else:
-      users_module.edit_user(self.db, user_id, self.get_argument("name"), self.get_argument("DOB"), self.get_argument("mobile"), self.get_argument("permanant_address"), self.get_argument("communication_address"), self.get_argument("designation"), self.get_argument("team"), self.get_argument("joined_on"), pan, pay_mode, accnt_no)
+      users_module.edit_user(self.db, user_id, user_compo, user_details)
     
       #redirect to the page with all users
       self.redirect("/payroll/salary/"+user_id+"/edit")
 
 class NewSalaryHandler(BaseHandler):
   def get(self, user_id):
-    user_details = users_module.get_user_details(self.db, user_id)
-    self.render("salary.html", user=user_details, errors="")
+    user_id = user_id.split("/new")[0]
+    user_name = users_module.get_user_details(self.db, user_id)['name']
+    sal_compo = users_module.get_sal_components(self.db)
+    self.render("salary.html", user_id=user_id, user_name=user_name, sal_compo=sal_compo, errors="")
 
   def post(self, user_id):
+    user_id = user_id.split("/new")[0]
     errors = []
-    if not self.request.arguments.has_key("basic") : errors.append("Please Enter basic salary")
-    if not self.request.arguments.has_key("hra") : errors.append("Please Enter HRA")
-    if not self.request.arguments.has_key("conveyence") : errors.append("Please Enter conveyence")
-    if not self.request.arguments.has_key("medical") : errors.append("Please Enter medical")
-    if not self.request.arguments.has_key("pt") : errors.append("Please Enter PT")
-    if not self.request.arguments.has_key("tds") : errors.append("Please Enter TDS")
-    if not self.request.arguments.has_key("monthly_leaves") : errors.append("Please Enter monthly_leaves")
-    if not self.request.arguments.has_key("vacation_leaves") : errors.append("Please Enter vacation_leaves")
-
     user_details = users_module.get_user_details(self.db, user_id)
+    user_name = user_details['name']
+    sal_compo = users_module.get_sal_components(self.db)
     
+    for sal in sal_compo:
+      if int(sal['required']) == 1:
+        if not self.request.arguments.has_key(sal['name']) : errors.append("Please Enter "+ sal['desc'])
+
+    post_data = self.request.arguments
+    sal_details = {}
+    sal_fields = [s['name'] for s in sal_compo]
+    for key in post_data:
+      if key in sal_fields:
+        sal_details[key] = post_data[key][0]
+
     if len(errors) > 0: 
       errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      self.render("salary.html", user=user_details, post_data=self.request.arguments, errors=errors_message)
-      #self.render("new_user.html", post_data=self.request.arguments, errors=errors_message)
+      self.render("salary.html", user_id=user_id, user_name=user_name, sal_details=sal_details, sal_compo=sal_compo, errors=errors_message)
     else:
-      users_module.add_salary(self.db, user_id, self.get_argument("basic"), self.get_argument("hra"), self.get_argument("conveyence"), self.get_argument("medical"), self.get_argument("pt"), self.get_argument("tds"), self.get_argument("monthly_leaves"), self.get_argument("vacation_leaves"))
-    
+      users_module.add_salary(self.db, user_id, sal_compo, sal_details )
+
       #redirect to the page with all users
       self.redirect("/payroll/users")
 
@@ -230,32 +246,31 @@ class EditSalaryHandler(BaseHandler):
   def get(self, user_id):
     sal_details = users_module.get_salary_details(self.db, user_id)
     user_name = users_module.get_user_details(self.db, user_id)['name']
-    self.render("edit_salary.html", user_id=user_id, user_name=user_name, sal_details=sal_details, errors="")
+    sal_compo = users_module.get_sal_components(self.db)
+    self.render("edit_salary.html", user_id=user_id, user_name=user_name, sal_details=sal_details, sal_compo=sal_compo, errors="")
 
   def post(self, user_id):
     errors = []
-    if not self.request.arguments.has_key("basic") : errors.append("Please Enter basic salary")
-    if not self.request.arguments.has_key("HRA") : errors.append("Please Enter HRA")
-    if not self.request.arguments.has_key("conveyence") : errors.append("Please Enter conveyence")
-    if not self.request.arguments.has_key("medical") : errors.append("Please Enter medical")
-    if not self.request.arguments.has_key("pt") : errors.append("Please Enter PT")
-    if not self.request.arguments.has_key("tds") : errors.append("Please Enter TDS")
-    if not self.request.arguments.has_key("monthly_leaves") : errors.append("Please Enter monthly_leaves")
-    if not self.request.arguments.has_key("vacation_leaves") : errors.append("Please Enter vacation_leaves")
-    
     user_details = users_module.get_user_details(self.db, user_id)
     user_name = user_details['name']
+    sal_compo = users_module.get_sal_components(self.db)
+
+    for sal in sal_compo:
+      if int(sal['required']) == 1:
+        if not self.request.arguments.has_key(sal['name']) : errors.append("Please Enter "+ sal['desc'])
+
     post_data = self.request.arguments
-    
+    sal_details = {}
+    sal_fields = [s['name'] for s in sal_compo]
+    for key in post_data:
+      if key in sal_fields:
+        sal_details[key] = post_data[key][0]
     if len(errors) > 0: 
       errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      sal_details = {}
-      for key in post_data:
-        sal_details[key] = post_data[key][0]
-      self.render("edit_salary.html", user_id=user_id, user_name=user_name, sal_details=sal_details, errors=errors_message)
+      self.render("edit_salary.html", user_id=user_id, user_name=user_name, sal_details=sal_details, sal_compo=sal_compo, errors=errors_message)
     else:
-      users_module.edit_salary(self.db, user_id, self.get_argument("basic"), self.get_argument("HRA"), self.get_argument("conveyence"), self.get_argument("medical"), self.get_argument("pt"), self.get_argument("tds"), self.get_argument("monthly_leaves"), self.get_argument("vacation_leaves"))
-    
+      users_module.edit_salary(self.db, user_id, sal_compo, sal_details)
+      
       #redirect to the page with all users
       self.redirect("/payroll/users")
 
@@ -267,45 +282,33 @@ class LeaveHandler(BaseHandler):
   def post(self):
     user = self.get_current_user()
     errors = []
-    if not self.request.arguments.has_key("month") : errors.append("Please select a month")
-
-    monthly_dates = ""
-    vacation_dates = ""
-    if not self.request.arguments.has_key("monthly_total") : 
-      errors.append("Please Enter monthly_total")
-    else:
-      if int(self.get_argument("monthly_total")) > 0:
-        if not self.request.arguments.has_key("monthly_dates"): 
-          errors.append("Please Enter monthly_dates") 
-        else:
-          monthly_dates = self.get_argument("monthly_dates")
-    
-    if not   self.request.arguments.has_key("vacation_total") : 
-      errors.append("Please Enter vacation_total")
-    else:
-      if (int(self.get_argument("vacation_total")) > 0):
-        if not self.request.arguments.has_key("vacation_dates"): 
-          errors.append("Please Enter vacation_dates")
-        else:
-          vacation_dates = self.get_argument("vacation_dates")
+    if not self.request.arguments.has_key("date") : errors.append("Please enter a date")
+    if not self.request.arguments.has_key("leave_type") : errors.append("Please enter leave_type")
 
     post_data = self.request.arguments
-    
     if len(errors) > 0: 
       errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
       self.render("leave_sheet.html", user=user, post_data=self.request.arguments, errors=errors_message)
     else:
-      users_module.add_leaves(self.db, user['id'], self.get_argument("month"), self.get_argument("monthly_total"), monthly_dates, self.get_argument("vacation_total"), vacation_dates)
-    
+      users_module.add_leaves(self.db, user['id'], self.get_argument("date"), self.get_argument("leave_type"))
+
       #redirect to the page with all users
       self.redirect("/payroll/users")
 
+class UserAdminHandler(BaseHandler):
+  def get(self):
+    user_compo = users_module.get_user_components(self.db)
+    self.render("user_admin.html", user_compo=user_compo, errors="")
+  
+  def post(self):
+    
+
 class SalaryCalcHandler(BaseHandler):
   def get(self):
-    
-    #self.redirect("/payroll/users")
-    
-    
+    sal_sheet = users_module.calculate_salary(self.db, "jan")
+    keys = [key for key in sal_sheet[0]]
+    self.render("salary_sheet.html", sal_sheet=sal_sheet, keys=keys)
+
 def main():
   tornado.options.parse_command_line()
   http_server = tornado.httpserver.HTTPServer(Application())

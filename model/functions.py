@@ -1,5 +1,5 @@
 from datetime import date, datetime, timedelta
-from time import time,mktime
+from time import time,mktime,strptime
 import math
 import yaml
 from BeautifulSoup import BeautifulSoup
@@ -84,21 +84,34 @@ def file_get_contents(path):
 def sanitize_text(html):
   old_tags = ["<strong>","</strong>", "<em>","</em>", "<sup>","</sup>", "<sub>", "</sub>", "<img", "<p>", "</p>", "<br />", "<br>", "<span", "</span>"]
   new_tags = ["[[strong]]","[[/strong]]", "[[em]]","[[/em]]", "[[sup]]","[[/sup]]", "[[sub]]", "[[/sub]]", "[[img", "[[p]]", "[[/p]]","[[br /]]", "[[br /]]", "[[span", "[[/span]]"]
+
   textHTML = html
   for k,v in enumerate(old_tags):
     textHTML = textHTML.replace(v,new_tags[k])
   text = ''.join(BeautifulSoup(textHTML).findAll(text=True))
+  text = text.encode("utf-8")
   for k,v in enumerate(new_tags):
     text = text.replace(v,old_tags[k])
   text = text.replace("<br>","<br />").replace("<br />","[[br /]]")
-  text = text.lstrip("[[br /]]").rstrip("[[br /]]").replace("[[br /]]","<br />")
+  #text = text.lstrip('[[br /]]').rstrip("[[br /]]").replace("[[br /]]","<br />")
+  text = text.replace('[[br /]]', "").replace("[[br /]]", '').replace("[[br /]]","<br />")
   text = BeautifulSoup(text).prettify()
+  
   return text
   
 def delete_row(db,table,key):
   return db.execute("UPDATE "+str(table)+" SET deleted = 1 WHERE id = %s",key)
-  
-def humanize_date_time(date_time, tz_original='GMT', tz='Asia/Kolkata'):
+
+def get_date(date, timeformat="%Y-%m-%d %H:%M:%S"):
+  return 
+
+def humanize_date_time(date_time, tz_original='GMT', tz='Asia/Kolkata', timeformat="%Y-%m-%d %H:%M:%S"):
+  if isinstance(date_time, unicode):
+    date_time = date_time.encode('utf-8')
+    date_time = datetime.fromtimestamp(mktime(strptime(date_time.split(".")[0], timeformat)))
+  elif isinstance(date_time, str):
+    date_time = datetime.fromtimestamp(mktime(strptime(date_time.split(".")[0], timeformat)))
+
   fmt = '%B %d, %Y %I:%M %p'
   original_tz = timezone(tz_original)
   display_tz = timezone(tz)
@@ -111,7 +124,13 @@ def convert_to_timezone(date_time, tz_original='GMT', tz='Asia/Kolkata'):
   time_orig = datetime(date_time.year, date_time.month, date_time.day, date_time.hour, date_time.minute, date_time.second, tzinfo=original_tz)
   return time_orig.astimezone(display_tz)
 
-def time_ago(date_time):
+def time_ago(date_time, timeformat="%Y-%m-%d %H:%M:%S"):
+  if isinstance(date_time, unicode):
+    date_time = date_time.encode('utf-8')
+    date_time = datetime.fromtimestamp(mktime(strptime(date_time.split(".")[0], timeformat)))
+  elif isinstance(date_time, str):
+    date_time = datetime.fromtimestamp(mktime(strptime(date_time.split(".")[0], timeformat)))
+
   #date_time = convert_to_timezone(date_time)
   current_time = int(time())
   original_time = int(mktime(date_time.timetuple()))
@@ -179,3 +198,19 @@ def create_chart(x_labels, values=[]):
     chart_elements.append(chart_element)
   chart_data = chart_data.replace('<<<<ELEMENTS>>>>',','.join(chart_elements))
   return chart_data.replace("'",'"')
+  
+def unify_list(seq, idfun=None): 
+    # order preserving
+    if idfun is None:
+        def idfun(x): return x
+    seen = {}
+    result = []
+    for item in seq:
+        marker = idfun(item)
+        # in old Python versions:
+        # if seen.has_key(marker)
+        # but in new ones:
+        if marker in seen: continue
+        seen[marker] = 1
+        result.append(item)
+    return result
