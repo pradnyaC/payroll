@@ -13,17 +13,22 @@
             <td> {{ user['name'] }}</td>
           </tr>
           <tr>
-            <td>Date</td>
+            <td>From Date</td>
+            <td>To Date</td>
             <td>Type</td>
           </tr>
           <tr>
             <td>
-              <textarea name="date" id="" rows="1" cols="10">{% try %}{{ request.arguments['date'][0] }}{% except %}{{ '' }}{% end %}</textarea> 
+              <input class="calendarSelectDate" id="datepicker" type="text" name="from_date" value={% try %}{{ request.arguments['from_date'][0] }}{% except %}{{ '' }}{% end %} ></input>
+            </td>
+            <td>
+              <input class="calendarSelectDate" id="datepicker" type="text" name="to_date" value={% try %}{{ request.arguments['to_date'][0] }}{% except %}{{ '' }}{% end %} ></input>
             </td>
             <td>
               <select name="leave_type">
-                <option value="month">Monthly</option>
-                <option value="vacation">vacation</option>
+                {% for type in leave_types %}
+                  <option value={{type['id']}}>{{type['desc']}}</option>
+                {% end %}
               </select>
             </td>
           </tr>

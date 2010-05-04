@@ -5,32 +5,25 @@
   {{ errors }}
 {% end %}
   <div>
-    <form action="/payroll/salary/{{user_id}}/edit" method="post" name="edit_salary">
+    <form action="/payroll/salary/{{emp_id}}/edit" method="post" name="edit_salary">
       {{ xsrf_form_html() }}
       <div >
         <table>
           <tr>
             <td>Employee Name:</td>
-            <td> {{user_name}}</td>
+            <td> {{emp_name}}</td>
           </tr>
-          {% for c in sal_compo %}
+          {% for c in sal_fields %}
             <tr>
-              <td>{{ c['desc'] }}</td> 
+              <td>{{ c['col_desc'] }}</td> 
               <td>
-                <textarea name={{c['name']}} rows="1" cols="15">{% try %}{{ sal_details[c['name']] }}{% except %}{{ 0 }}{% end %}</textarea> 
+                <textarea name={{c['col_name']}} rows="1" cols="15">{% try %}{{ sal_details[c['col_name']] }}{% except %}{{ c['default_val'] }}{% end %}</textarea> 
               </td>
-              <!--<td> On 
-                <select name="on_compo_tds">
-                  {% for c in sal_compo %}
-                    <option value={{c}}>{{c}}</option>
-                  {% end %}
-                </select>
-              </td>-->
             </tr>
           {% end %}
         </table>
       </div>
-      <input type="hidden" name="user_id" value={{ user_id }} />
+      <input type="hidden" name="emp_id" value={{ emp_id }} />
       <input type="submit" value="Submit">
     </form>
   	{% end %}

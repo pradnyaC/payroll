@@ -103,7 +103,13 @@ def delete_row(db,table,key):
   return db.execute("UPDATE "+str(table)+" SET deleted = 1 WHERE id = %s",key)
 
 def get_date(date, timeformat="%Y-%m-%d %H:%M:%S"):
-  return 
+  if isinstance(date_time, unicode):
+    date_time = date_time.encode('utf-8')
+    date_time = datetime.fromtimestamp(mktime(strptime(date_time.split(".")[0], timeformat)))
+  elif isinstance(date_time, str):
+    date_time = datetime.fromtimestamp(mktime(strptime(date_time.split(".")[0], timeformat)))
+
+  return date_time
 
 def humanize_date_time(date_time, tz_original='GMT', tz='Asia/Kolkata', timeformat="%Y-%m-%d %H:%M:%S"):
   if isinstance(date_time, unicode):

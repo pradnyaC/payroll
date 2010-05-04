@@ -6,12 +6,23 @@
         <link rel="stylesheet" href="{{ static_url('stylesheets/style.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ static_url('stylesheets/jquery.megamenu.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ static_url('stylesheets/jquery.timer.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ static_url('stylesheets/datepicker.css') }}" type="text/css" /> 
+
         {% block css_includes %}{% end %}
         <script type="text/javascript" src="{{ static_url('javascripts/jquery.js') }}">
         </script>
         <script language="JavaScript" src="ts_picker.js">
         </script>
-        {% block javascript_includes  %} {% end %}
+        <script type="text/javascript" src="{{ static_url('javascripts/datepicker.js')}}"></script> 
+        <script type="text/javascript" src="{{ static_url('javascripts/core.js')}}"></script>
+        {% block javascript_includes  %} 
+        
+        {% end %}
+        <script>
+          $(document).ready(function() {
+            $("#datepicker").datepicker();
+          });
+        </script>
     </head>
     <body>
         <table id="Wrapper" cellpadding="0" cellspacing="0" border="0">
@@ -34,7 +45,7 @@
                             <td width="350px" class="TWidgetsTD">
                             </td>
                             <td align="right" class="TWidgetsTD">
-                              You are logged in as <strong><a href="">User ID</a></strong> |
+                              You are logged in as <strong><a href="">{{current_user['name']}}</a></strong> |
                               <a title="Logout" href="">Logout</a>
                             </td>
                           </tr>

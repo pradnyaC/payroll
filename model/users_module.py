@@ -1,162 +1,241 @@
-import openid
-from openid.consumer.consumer import Consumer
-from openid.consumer.discover import DiscoveryFailure
-from openid.store.interface import OpenIDStore
-from yadis import xri
 import time
 from datetime import datetime
-import httplib
-import urllib2
-import consumer
+from datetime import date
 import functions
+import yaml
 
-def new_user(db, user_compo, user_details):
-  user_fields = [u['name'] for u in user_compo]
-  field_types = [u['obj_type'] for u in user_compo]
+types_file = open("data_types.yml")
+types = yaml.load(types_file)
+types_file.close()
+
+
+""" User Functions """
+def add_user(db, user_id, name, email):
+  return db.execute("INSERT INTO users (user_id, name, email) VALUES (%s, %s, %s)", user_id, name, email)
+
+def get_user_details(db, user_id):
+  return db.get("SELECT * FROM users WHERE user_id = %s", user_id)
+
+
+""" Employee functions """
+def get_employee_fields(db):
+  fields = db.query("SELECT * FROM employee_struct ORDER BY id")
+  for f in fields:
+    f['col_type'] = types[int(f['col_type'])]['type']
+  return fields
+
+def get_emp_field_type(db):
+  fields = db.query("SELECT col_name, col_type FROM employee_struct ORDER BY id")
+  details = {}
+  for f in fields:
+    details[f['col_name']] = types[int(f['col_type'])]['type']
+  return details
+
+def add_employee_fields(db, current_user, fields_details):
+  db.execute("INSERT INTO employee_struct (name, desc, obj_type, required) VALUES")
+
+def new_employee(db, current_user, employee_details):
+  field_types = get_emp_field_type(db)
+  keys = [key for key in employee_details]
+
+  query = "INSERT INTO employee ("
+  query += ",".join(keys)
+  query += " ) VALUES ( " + ",".join(["%s" for u in keys]) + " )"
+
   values = []
-  query = "INSERT INTO users ("
-  query += ",".join(user_fields)
-  query += " ) VALUES ( " + ",".join(["%s" for u in user_fields]) + " )"
-  
-  for field in user_fields:
-    if field_types[user_fields.index(field)] == "date":
-      values.append(datetime.strptime(user_details[field], '%d-%m-%Y'))
+  for key in keys:
+    if field_types[key] == "date":
+      values.append(datetime.strptime(employee_details[key], '%d-%m-%Y'))
     else:
-      values.append(user_details[field])
+      values.append(employee_details[key])
   db.execute(query, *values)
   
   return db.get("SELECT LAST_INSERT_ID()")['LAST_INSERT_ID()']
 
-def edit_user(db, user_id, user_compo, user_details):
-  user_fields = [u['name'] for u in user_compo]
-  field_types = [u['obj_type'] for u in user_compo]
+def edit_employee_details(db, employee_id, employee_details):
+  keys = [key for key in employee_details]
+  field_types = get_emp_field_type(db)
 
   values = []
-  query = "UPDATE users SET "
+  query = "UPDATE employee SET "
   i = 0
-  for field in user_fields:
-    if field_types[user_fields.index(field)] == "date":
-      values.append(datetime.strptime(user_details[field], '%Y-%m-%d %H:%M:%S'))
+  for key in keys:
+    if field_types[key] == "date":
+      values.append(datetime.strptime(employee_details[key], '%Y-%m-%d %H:%M:%S'))
     else:
-      values.append(user_details[field])
-    query += str(field) + "= %s"
+      values.append(employee_details[key])
+    query += str(key) + "= %s"
     i += 1
-    if i < len(user_fields): query += " , "
+    if i < len(keys): query += " , "
   
-  query += " WHERE id = "+ user_id
+  query += " WHERE id = "+ employee_id
   return db.execute(query, *values)
 
+def get_employee_details(db, employee_id):
+  return db.get("SELECT * FROM employee WHERE id = %s", employee_id)
 
-def get_user_details(db, user_id):
-  return db.get("SELECT * FROM users WHERE id = %s", user_id)
+def get_all_employees(db):
+  return db.query("SELECT * FROM employee WHERE deleted = 0")
 
-def get_all_users(db):
-  return db.query("SELECT * FROM users WHERE deleted = 0")
+def parse_employee_details(employee_dict):
+  details = {}
+  for key in employee_dict:
+    if key.count("value") > 0:
+      details[key.split(".")[1]] = employee_dict[key]
+  return details
 
-def add_salary(db, user_id, sal_compo, sal_details):
-  sal_fields = [s['name'] for s in sal_compo]
-  field_types = [u['obj_type'] for u in sal_compo]
+
+""" Salary Functions """
+def get_salary_fields(db):
+  fields =  db.query("SELECT * FROM salary_struct ORDER BY id")
+  for f in fields:
+    f['col_type'] = types[int(f['col_type'])]['type']
+  return fields
+
+def get_salary_fields_types(db):
+  fields =  db.query("SELECT col_name, col_type FROM salary_struct ORDER BY id")
+  details = {}
+  for f in fields:
+    details[f['col_name']] = types[int(f['col_type'])]['type']
+  return details
+
+def add_salary(db, employee_id, sal_details):
+  sal_types = get_salary_fields_types(db)
+  keys = [key for key in sal_details]
+
+  query = "INSERT INTO salary (employee_id, "
+  query += ",".join(keys)
+  query += " ) VALUES ( " + employee_id + ", "
+  query += ",".join(["%s" for u in keys]) + " )"
+
   values = []
-
-  query = "INSERT INTO salary (user_id, "
-  query += ",".join(sal_fields)
-  query += " ) VALUES ( " + user_id + ", "
-  query += ",".join(["%s" for u in sal_fields]) + " )"
-
-  for field in sal_fields:
-    if field_types[sal_fields.index(field)] == "date":
-      values.append(datetime.strptime(sal_details[field], '%d-%m-%Y'))
+  for key in keys:
+    if sal_types[key] == "date":
+      values.append(datetime.strptime(sal_details[key], '%d-%m-%Y'))
     else:
-      values.append(sal_details[field])
+      values.append(sal_details[key])
+  db.execute(query, *values)
 
-  return db.execute(query, *values)
+def edit_salary(db, emp_id, sal_details):
+  sal_types = get_salary_fields_types(db)
+  keys = [key for key in sal_details]
 
-def edit_salary(db, user_id, sal_compo, sal_details):
-  sal_fields = [s['name'] for s in sal_compo]
-  field_types = [sal['obj_type'] for sal in sal_compo]
   values = []
   query = "UPDATE salary SET "
   i = 0
-  for field in sal_fields:
-    if field_types[sal_fields.index(field)] == "date":
-      values.append(datetime.strptime(sal_details[field], '%Y-%m-%d %H:%M:%S'))
+
+  for key in keys:
+    if sal_types[key] == "date":
+      values.append(datetime.strptime(sal_details[key], '%Y-%m-%d %H:%M:%S'))
     else:
-      values.append(sal_details[field])
-    query += str(field) + "= %s"
+      values.append(sal_details[key])
+    query += str(key) + "= %s"
     i += 1
-    if i < len(sal_fields): query += " , "
+    if i < len(keys): query += " , "
   
-  query += " WHERE user_id = " + user_id
+  query += " WHERE employee_id = " + emp_id
   return db.execute(query, *values)
 
-def get_salary_details(db, user_id):
-  return db.get("SELECT * FROM salary WHERE user_id = %s", user_id)
+def get_salary_details(db, emp_id):
+  return db.get("SELECT * FROM salary WHERE employee_id = %s", emp_id)
 
 
-def add_leaves(db, user_id, leave_on, leave_type):
-  leave_on = datetime.strptime(leave_on, '%d/%m/%Y')
-  return db.execute("INSERT INTO leaves (user_id, leave_on, leave_type ) VALUES (%s, %s, %s)", user_id, leave_on, leave_type)
+""" Leave functions"""
 
-def get_leave_details(db, user_id, from_date=None, to_date=None):
-  query_string = "SELECT * FROM leaves WHERE user_id = %s "
-  if not from_date:
-    return db.query(query_string, user_id)
-  else:
-    query_string = query_string + " AND leave_on BETWEEN %s AND %s"
-    if not to_date:
-      return db.query(query_string, user_id, from_date, datetime.now())
-    else:
-      return db.query(query_string, user_id, from_date, to_date)
+def get_leave_types(db):
+  return db.query("SELECT * FROM leave_type ORDER BY id")
 
-def get_total_leaves(db, user_id, from_date=None, to_date=None):
-  query_string = "SELECT count(*) AS count FROM leaves WHERE user_id = %s "
-  if not from_date:
-    return db.query(query_string, user_id)
-  else:
-    query_string = query_string + " AND leave_on BETWEEN %s AND %s"
-    if not to_date:
-      return db.query(query_string, user_id, from_date, datetime.now())
-    else:
-      return db.query(query_string, user_id, from_date, to_date)
-
-def get_sal_components(db):
-  result =  db.query("SELECT * FROM salary_struct ORDER BY id")
-  return result
-
-def get_user_components(db):
-  return db.query("SELECT * FROM user_struct ORDER BY id")
+def add_leaves(db, employee_id, leave_from, leave_to, leave_type):
+  leave_from = datetime.strptime(leave_from, '%d/%m/%Y')
+  leave_to = datetime.strptime(leave_to, '%d/%m/%Y')
   
-def add_user_component(db, name, desc, ojb_type, val=0):
-  db.execute("")
+  return db.execute("INSERT INTO leaves (employee_id, from_date, to_date, leave_type ) VALUES (%s, %s, %s, %s)", employee_id, leave_from, leave_to, leave_type)
 
-def calculate_salary(db, month):
-  users = get_all_users(db)
-  user_ids = [u['id'] for u in users]
-  sal_compo = get_sal_components(db)
-  sal_fields = [s['name'] for s in sal_compo]
-  
-  sal_sheet = []
-  for uid in user_ids:
+def get_leave_details(db, emp_id, from_date=None, to_date=None):
+  query_string = "SELECT * FROM leaves WHERE employee_id = %s "
+  if not from_date:
+    return db.query(query_string, emp_id)
+  else:
+    query_string = query_string + " AND from_date > %s"
+    if not to_date:
+      return db.query(query_string, emp_id, from_date, datetime.now())
+    else:
+      query_string = query_string + " AND to_date < %s"
+      return db.query(query_string, emp_id, from_date, to_date)
+
+def get_month_leaves(db, emp_id, month):
+  from_date =  date(date.today().year, month, 1)
+  try: 
+    to_date = date(date.today().year, month, 31)
+  except:
+    to_date = date(date.today().year, month, 30)
+  return db.query("SELECT count(*) AS count FROM leaves WHERE employee_id = %s AND from_date >= %s and to_date <= %s", emp_id, from_date, to_date)
+
+def get_sal_slip_titles(db):
+  titles = db.query("SELECT distinct title FROM salary_slip_struct where deleted = 0 ORDER BY title")
+  return [t['title'] for t in titles]
+
+
+def get_sal_slip_struct(db):
+  sal_slip = db.query("SELECT * FROM salary_slip_struct where deleted = 0 ORDER BY title")
+  sal_struct = {}
+  title = ""
+  for s in sal_slip:
+    if not title == s['title']:
+      title = s['title']
+      sal_struct[title] = []
+    sal_struct[title].append(s)
+  return sal_struct
+
+def get_sal_slip_fields(db):
+  fields = db.query("SELECT value FROM salary_slip_struct where deleted = 0 ORDER BY title")
+  return [f['value'] for f in fields]
+
+def calculate_salary(db, month, emp_id=None):
+  if not emp_id:
+    employees = get_all_employees(db)
+    emp_ids = [e['id'] for e in employees]
+  else:
+    emp_ids = [emp_id]
+
+  slip_struct = get_sal_slip_struct(db)
+  slip_fields = get_sal_slip_fields(db)
+  sal_sheet = {}
+  for uid in emp_ids:
     details = {}
+    
+    #Add employee details
+    emp_details = get_employee_details(db, uid)
+    if emp_details:
+      for key in emp_details:
+        details[key] = emp_details[key]
     
     #Add salary details to the sheet
     sal_details = get_salary_details(db, uid)
     if sal_details:
       for key in sal_details:
-        if key in sal_fields:
-          details[key] = sal_details[key]
-      
+        details[key] = sal_details[key]
+
     #Add leave details to the sheet
+    leave_details = get_month_leaves(db, emp_id, month)
     if leave_details:
-      leave_details = get_total_leaves(db, uid, '01/01/1000')
       details['total_leaves'] = leave_details[0]['count']
     else:
       details['total_leaves'] = 0
-    details['user_id'] = uid
+    details['emp_id'] = uid
     
-    
-    sal_sheet.append(details)
-    
+    sal_slip = {}
+    for title in slip_struct:
+      fields = slip_struct[title]
+      for f in fields:
+        if details.has_key(str(f['value'])):
+          if not sal_slip.has_key(title):
+            sal_slip[title] = {}
+          sal_slip[title][f['desc']] = details[f['value']]
+      sal_slip['total_leaves'] = details['total_leaves']
+      sal_slip['emp_id'] = details['emp_id']
+    sal_sheet[uid] = sal_slip
+  
   return sal_sheet
 
 def user_login(request):
