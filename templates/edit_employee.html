@@ -1,0 +1,29 @@
+{% extends "base.html" %} 
+{% block body %}
+
+{% if len(errors) > 0 %}
+  {{ errors }}
+{% end %}
+  <div>
+    <form action="/payroll/employee/{{employee_id}}/edit" method="post" name="edit_employee">
+      {{ xsrf_form_html() }}
+      <div>
+        <table>
+          {% for u in employee_fields %}
+            <tr>
+              <td>{{ u['col_desc'] }}</td> 
+              <td>
+                <textarea name={{ u['col_name' ]}} rows="1" cols="20">{% try %}{{ employee_details[u['col_name' ]] }}{% except %}{{ '' }}{% end %}</textarea> 
+              </td>
+            </tr>
+          {% end %}
+        </table>
+      </div>
+      <input type="submit" value="Update">
+    </form>
+  	{% end %}
+  </div>
+
+{% block page_title %}
+  PaGaLGuY New user
+{% end %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %} 
+{% block body %}
+
+{% if len(errors) > 0 %}
+  {{ errors }}
+{% end %}
+  <div >
+    <table border="1">
+      <tr>
+        <td>Name</td>
+        <td>Desc</td>
+        <td>Type</td>
+        <td>Maxlength</td>
+        <td>Required</td>
+        <td>category</td>
+        <td>edit_all</td>
+        <td>display_all</td>
+      </tr>
+      {% for f in emp_fields %}
+        <tr>
+          <td>{{ f['col_name'] }}</td>
+          <td>{{ f['col_desc'] }}</td>
+          <td>{{ f['col_type'] }}</td>
+          <td>{{ f['max_lenght'] }}</td>
+          <td>{{ f['required'] }}</td>
+          <td>{{ f['category'] }}</td>
+          <td>{{ f['is_edit_all'] }}</td>
+          <td>{{ f['is_display_all'] }}</td>
+        </tr>
+      {% end %}
+    </table>
+    <table class="InputContainer" name="userFields" border="0" cellpadding="0" cellspacing="0">
+      
+    </table>
+    <div>
+        <input type="button" name="add_field" id="add_field" value="Add More Fields" />
+    </div>
+  </div>
+{% end %}
+{% block page_title %}
+  PaGaLGuY All users
+{% end %}

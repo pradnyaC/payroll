@@ -1,0 +1,45 @@
+{% extends "base.html" %} 
+{% block body %}
+
+{% if len(errors) > 0 %}
+  {{ errors }}
+{% end %}
+    <form action="/payroll/employee/new" method="post" name="new_employee">
+      {{ xsrf_form_html() }}
+      <div class="FormLabel">
+            Personal Details
+      </div>
+      <div>
+        <table class="InputContainer" id="OptionFields" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+           <td>
+            <label for="emp_name"><span class="LoginLabels">Name: </span> 
+            <input type="text" name="emp_name" class="InputText" /></label>
+           </td>
+         </tr>
+        </table>
+      </div>
+      <div class="FormLabel">
+            Professional Details
+      </div>
+      <div>
+        <table class="InputContainer" id="OptionFields" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+           <td>
+            <label for="emp_name"><span class="LoginLabels">Name: </span> 
+            <input type="text" name="emp_name" class="InputText" /></label>
+           </td>
+         </tr>
+        </table>
+      </div>
+
+
+      <div style="text-align: right;">
+        <input type="submit" name="save" value="Save"class="RoundButtons" />
+      </div>
+    </form>
+
+{% end %}
+{% block page_title %}
+  PaGaLGuY New user
+{% end %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %} 
+{% block body %}
+{% if sal_sheet %}
+  {% for emp_id in sal_sheet %}
+    <div>
+      <table border="1">
+        {% for title in slip_titles %}
+        <tr>
+          <td>{{ title }}</td>
+        </tr>
+        <tr>
+        {% for s in sal_sheet[emp_id][title] %}
+          <td> {{ s }} : {{ sal_sheet[emp_id][title][s] }}</td>
+        {% end %}
+        </tr>
+      {% end %}
+    </table>
+  </div>
+{% end %}
+{% end %}
+{% end %}
+{% block page_title %}
+  PaGaLGuY New user
+{% end %}

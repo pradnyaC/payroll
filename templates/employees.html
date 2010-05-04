@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body %}
+<div>
+{% if len(employees) > 0 %}
+  <table border="1">
+    <tr>
+      <td><h3> Employee Name </h3></td>
+      <td><h3> Team </h3></td>
+      <td><h3> Designation </h3></td>
+    </tr>
+    {% for employee in employees %}
+      <tr>
+        <td>{{ employee['name'] }}</td>
+        <td>{{ employee['team'] }}</td>
+        <td>{{ employee['designation'] }}</td>
+        <td><a href="/payroll/employee/{{employee['id']}}/edit"> Edit</a></td>
+      </tr>
+    {% end %}
+  </table>
+{% end %}
+</div>
+{% end %}
+{% block page_title %}
+  PaGaLGuY All users
+{% end %}
