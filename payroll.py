@@ -163,12 +163,11 @@ class FinishHandler(BaseHandler, test1.OpenIDRequestHandler):
 class EmployeeHandler(BaseHandler):
   def get(self):
     employees = users_module.get_all_employees(self.db)
-    self.render("employees.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin'], employees=employees)
+    self.render("employees.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), employees=employees)
 
 class NewEmployeeHandler(BaseHandler):
   def get(self):
-    employee_fields = users_module.get_employee_fields(self.db)
-    self.render("new_employee.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin'], post_data=self.request.arguments, employee_fields=employee_fields, errors="")
+    self.render("new_employee.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), errors="")
 
   def post(self):
     errors = []
