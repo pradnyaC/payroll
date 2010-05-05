@@ -10,15 +10,18 @@ def get_user_details(db, userid):
   return db.get("SELECT * FROM users WHERE userid = %s", userid)
 
 def get_user_by_email(db, email):
-  return db.get("SELECT * FROM users WHERE email like %s", email)
-
+  result = db.get("SELECT userid FROM users WHERE email like %s", email)
+  if result:
+    return result['userid']
+  else:
+    return 0
 
 """ Employee functions """
 
 def get_employee_by_email(db, email):
   return db.get("SELECT * FROM employee WHERE email like %s", email)
 
-def new_emp(db, empid, details):
+def new_employee(db, empid, details):
   return db.execute("INSERT INTO employee (empid, details) VALUES (%s, %s)", empid, simplejson.dumps(details))
 
 def edit_emp_details(db, empid, details):
@@ -30,11 +33,11 @@ def delete_employee(db, empid):
 def get_emp_details(db, empid):
   result = db.query("SELECT details FROM employee WHERE empid = %s AND deleted = 0", empid)
   if result:
-    return simpljson.loads(result['details'])
+    return simplejson.loads(result[0]['details'])
   else:
     return {}
 
-def get_all_empids (db):
+def get_all_empids(db):
   result = db.query("SELECT empid FROM employee WHERE deleted = 0")
   if result:
     return [ r['empid' ]for r in result ]

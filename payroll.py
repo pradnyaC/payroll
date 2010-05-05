@@ -162,60 +162,31 @@ class FinishHandler(BaseHandler, test1.OpenIDRequestHandler):
       
 class EmployeeHandler(BaseHandler):
   def get(self):
-    employees = users_module.get_all_employees(self.db)
+    employees = emp_module.get_all_emp_details(self.db)
     self.render("employees.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), employees=employees)
 
 class NewEmployeeHandler(BaseHandler):
   def get(self):
-    self.render("new_employee.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), errors="")
+    self.render("new_employee.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']))
 
   def post(self):
-    errors = []
-    post_data = self.request.arguments
-    employee_fields = users_module.get_employee_fields(self.db)
-
-    for field in employee_fields:
-      if int(field['required']) == 1:
-        if not self.request.arguments.has_key(field['col_name']) : errors.append("Please Enter "+ field['col_desc'])
-
     post_data = self.request.arguments
     employee_details = {}
-    user_fields = [f['col_name'] for f in employee_fields]
-    
-    for key in post_data:
-      if key in user_fields:
+    for key in post_data: 
+      if not str(key) == "_xsrf" and not str(key) == "save":
         employee_details[key] = post_data[key][0]
-    """
-    ### Specifically salary code ##
-    if not self.request.arguments.has_key("salary_mode") : errors.append("Please Enter salary_mode")
-    else:
-      if self.get_argument("salary_mode") == "bank":
-        pay_mode = "bank"
-        if not self.request.arguments.has_key("account_no"): 
-          accnt_no = None
-          errors.append("Please Enter accnt number")
-        else:
-          accnt_no = self.get_argument("account_no")
-      else:
-        pay_mode = "cheque"
-        accnt_no = None
-    ### ###
-    """
-    if len(errors) > 0: 
-      errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      self.render("new_employee.html", current_user = self.get_current_user(), employee_fields=employee_fields, employee_details=employee_details, errors=errors_message)
-    else:
-      employee_id = users_module.new_employee(self.db, employee_fields, employee_details)
-      
-      #redirect to the page with all users
-      self.redirect("/payroll/salary/"+str(employee_id)+"/new")
+    empid = emp_module.get_user_by_email(self.db, employee_details['email'])
+    employee_id = emp_module.new_employee(self.db, empid , employee_details)
+
+    #redirect to the page with all users
+    #self.redirect("/payroll/salary/"+str(employee_id)+"/new")
+
 
 class EditEmployeeHandler(BaseHandler):
   def get(self, employee_id):
-    employee_details = users_module.get_employee_details(self.db, employee_id)
-    employee_fields = users_module.get_employee_fields(self.db)
+    employee_details = emp_module.get_emp_details(self.db, employee_id)
 
-    self.render("edit_employee.html", current_user = self.get_current_user(), employee_id=employee_id, employee_fields=employee_fields, employee_details=employee_details, errors="")
+    self.render("edit_employee.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), employee_id=employee_id, employee_details=employee_details, errors="")
 
 
   def post(self, employee_id):

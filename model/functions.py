@@ -7,6 +7,8 @@ from pytz import timezone
 import pytz
 import re
 
+import emp_module
+
 def mynaturalday(value, arg=None):
   """
   For date values that are tomorrow, today or yesterday compared to
@@ -183,6 +185,51 @@ def create_left_menu(path, menu_yaml='menu.yml', active=-1):
     menu_display = menu_display + this_menu
   return menu_display
   
+def create_emp_form(path, title_path, form_yml="emp.yml", employee=None):
+  form_data = yaml.load(open(form_yml))['emp']
+  titles = [key for key in form_data]
+  form_layout = open(path).read()
+  title_layout = open(title_path).read()
+  form_display = ''
+  
+  for title in titles:
+    title_field = title_layout.replace('{TITLE}', title)
+    display = ''
+    for i in form_data[title]:
+      field = form_data[title][i]
+      maxlen = 0
+      if field.has_key('maxlength'): maxlen = field['maxlength']
+      this_field = form_layout.replace('{NAME}',str(field['name'])).replace('{LABEL}',str(field['label'])).replace('{ID}',str(field['id'])).replace('{SIZE}',str(field['size'])).replace('{MAXLENGTH}', str(maxlen))
+      if employee:
+        value = ""
+        if employee.has_key(field['name']): value = str(employee[field['name']])
+        this_field = this_field.replace('{VALUE}', str(value))
+      display = display + this_field
+    form_display = form_display + title_field + display
+  return form_display
+
+def create_emp_display(path, title_path, employee, form_yml="emp.yml"):
+  form_data = yaml.load(open(form_yml))['emp']
+  titles = [key for key in form_data]
+  form_layout = open(path).read()
+  title_layout = open(title_path).read()
+  form_display = ''
+
+  for title in titles:
+    title_field = title_layout.replace('{TITLE}', title)
+    display = ''
+    for i in form_data[title]:
+      field = form_data[title][i]
+      value = ""
+      if employee.has_key(field['name']): value = str(employee[field['name']])
+      this_field = form_layout.replace('{LABEL}',str(field['label'])).replace('{VALUE}',value)
+      display = display + this_field
+    form_display = form_display + title_field + display
+  return form_display
+
+def create_validation_rules(form_yml="validate.yml"):
+  return yaml.load(open(form_yml))
+
 def create_chart(x_labels, values=[]):
   chart_data = open("templates/chart_data.json").read()
   chart_data = chart_data.replace('<<<<LABELS>>>>',str(x_labels))

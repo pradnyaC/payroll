@@ -6,7 +6,8 @@
         <link rel="stylesheet" href="{{ static_url('stylesheets/style.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ static_url('stylesheets/jquery.megamenu.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ static_url('stylesheets/jquery.timer.css') }}" type="text/css" />
-        <link rel="stylesheet" href="{{ static_url('stylesheets/datepicker.css') }}" type="text/css" /> 
+        <link rel="stylesheet" href="{{ static_url('stylesheets/datepicker.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ static_url('stylesheets/validate.css') }}" type="text/css" />  
 
         {% block css_includes %}{% end %}
         <script type="text/javascript" src="{{ static_url('javascripts/jquery.js') }}">
@@ -15,12 +16,17 @@
         </script>
         <script type="text/javascript" src="{{ static_url('javascripts/datepicker.js')}}"></script> 
         <script type="text/javascript" src="{{ static_url('javascripts/core.js')}}"></script>
+        <script type="text/javascript" src="{{ static_url('javascripts/jquery.validate.js')}}"></script> 
         {% block javascript_includes  %} 
         
         {% end %}
         <script>
           $(document).ready(function() {
             $("#datepicker").datepicker();
+            $("#empForm").validate(
+              {% import functions %}
+              {{ functions.create_validation_rules('validate.yml') }}
+            );
           });
         </script>
     </head>

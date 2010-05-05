@@ -1,4 +1,20 @@
 
+CREATE TABLE employee (empid varchar(255), details longblob);
+CREATE TABLE users (userid varchar(255), name varchar(255), email varchar(255));
+CREATE TABLE salary (empid varchar(255), details longblob);
+CREATE TABLE leaves (key varchar(255), details longblob);
+
+
+
+
+
+
+
+
+
+
+
+
 emp_id -> {dict of details}
 
 

@@ -1,44 +1,25 @@
 {% extends "base.html" %} 
 {% block body %}
 
-{% if len(errors) > 0 %}
-  {{ errors }}
-{% end %}
-    <form action="/payroll/employee/new" method="post" name="new_employee">
+{% if is_an_admin %}
+    <form action="/payroll/employee/new" method="post" name="new_employee" id="empForm">
       {{ xsrf_form_html() }}
-      <div class="FormLabel">
-            Personal Details
+      <div >
+          <table>
+          <!--Form starts-->
+              {% import functions %}
+              {{ functions.create_emp_form('templates/emp_form.html', 'templates/form_title.html', 'emp.yml') }}
+          <!--From ends-->
+          </table>
       </div>
-      <div>
-        <table class="InputContainer" id="OptionFields" border="0" cellpadding="0" cellspacing="0">
-         <tr>
-           <td>
-            <label for="emp_name"><span class="LoginLabels">Name: </span> 
-            <input type="text" name="emp_name" class="InputText" /></label>
-           </td>
-         </tr>
-        </table>
-      </div>
-      <div class="FormLabel">
-            Professional Details
-      </div>
-      <div>
-        <table class="InputContainer" id="OptionFields" border="0" cellpadding="0" cellspacing="0">
-         <tr>
-           <td>
-            <label for="emp_name"><span class="LoginLabels">Name: </span> 
-            <input type="text" name="emp_name" class="InputText" /></label>
-           </td>
-         </tr>
-        </table>
-      </div>
-
-
+          
       <div style="text-align: right;">
         <input type="submit" name="save" value="Save"class="RoundButtons" />
       </div>
     </form>
-
+{% else %}
+  You are not allowed to view this page
+{% end %}
 {% end %}
 {% block page_title %}
   PaGaLGuY New user

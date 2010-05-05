@@ -1,29 +1,28 @@
 {% extends "base.html" %} 
 {% block body %}
 
-{% if len(errors) > 0 %}
-  {{ errors }}
-{% end %}
+{% if is_an_admin %}
   <div>
     <form action="/payroll/employee/{{employee_id}}/edit" method="post" name="edit_employee">
       {{ xsrf_form_html() }}
-      <div>
-        <table>
-          {% for u in employee_fields %}
-            <tr>
-              <td>{{ u['col_desc'] }}</td> 
-              <td>
-                <textarea name={{ u['col_name' ]}} rows="1" cols="20">{% try %}{{ employee_details[u['col_name' ]] }}{% except %}{{ '' }}{% end %}</textarea> 
-              </td>
-            </tr>
-          {% end %}
-        </table>
+      <div >
+          <table>
+          <!--Form starts-->
+              {% import functions %}
+              {{ functions.create_emp_form('templates/emp_form.html', 'templates/form_title.html', 'emp.yml', employee_details) }}
+          <!--From ends-->
+          </table>
       </div>
-      <input type="submit" value="Update">
+          
+      <div style="text-align: right;">
+        <input type="submit" name="save" value="Save"class="RoundButtons" />
+      </div>
     </form>
-  	{% end %}
   </div>
-
+{% else %}
+  You are not allowed to view this page
+{% end %}
+{% end %}
 {% block page_title %}
   PaGaLGuY New user
 {% end %}

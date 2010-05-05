@@ -2,21 +2,15 @@
 {% block body %}
 <div>
 {% if len(employees) > 0 %}
-  <table border="1">
-    <tr>
-      <td><h3> Employee Name </h3></td>
-      <td><h3> Team </h3></td>
-      <td><h3> Designation </h3></td>
-    </tr>
-    {% for employee in employees %}
-      <tr>
-        <td>{{ employee['name'] }}</td>
-        <td>{{ employee['team'] }}</td>
-        <td>{{ employee['designation'] }}</td>
-        <td><a href="/payroll/employee/{{employee['id']}}/edit"> Edit</a></td>
-      </tr>
+  {% for empid in employees %}
+    {% import functions %}
+    {{ functions.create_emp_display('templates/emp_display.html', 'templates/form_title.html', employees[empid], 'emp.yml') }}
+    {% if is_an_admin %}
+      <a href="/payroll/employee/{{empid}}/edit"> Edit</a>
     {% end %}
-  </table>
+  {% end %}
+        <!-- <td></td> -->
+    
 {% end %}
 </div>
 {% end %}
