@@ -145,11 +145,23 @@ def get_expenses(db, empid, month=datetime.date.today().month):
   else:
     return {}
 
-
 """  Salary Slip """
 def calc_salary(db, empid, formula_yml="formulas.yml"):
-  formula = yaml.load(open(formula_yml))['salary']
-  salary_details = get_salary_details(db, empid)
-  formula = Template(formula)
-  sal = eval(formula.substitute(salary_details))
+  result = {}
+  val_dict = {}
 
+  salary_details = get_salary_details(db, empid)
+  expense_details = get_expenses(db, empid)[empid]
+  val_dict = dict(val_dict, **salary_details)
+  val_dict = dict(val_dict, **expense_details)
+  
+  formula_set = yaml.load(open(formula_yml))
+  for key in formula_set:
+    res = {}
+    for i in formula_set[key]:
+      formula = formula_set[key][i]
+      res[i] = eval(Template(formula).substitute(val_dict))
+      val_dict[i] = res[i]
+    result[key] = res['z']
+
+  return result
