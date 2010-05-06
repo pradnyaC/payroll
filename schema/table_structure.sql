@@ -1,9 +1,9 @@
 
-CREATE TABLE employee (empid varchar(255), details longblob);
+CREATE TABLE employee (empid int(20) NOT NULL auto_increment PRIMARY KEY, details longblob);
 CREATE TABLE users (userid varchar(255), name varchar(255), email varchar(255));
 CREATE TABLE salary (empid varchar(255), details longblob);
-CREATE TABLE leaves (key varchar(255), details longblob);
-
+CREATE TABLE leaves (leave_key varchar(255), details longblob);
+CREATE TABLE expenses (expenseid varchar(255), details longblob);
 
 
 

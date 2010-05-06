@@ -3,7 +3,7 @@
 
 {% if is_an_admin %}
   <div>
-    <form action="/payroll/employee/{{employee_id}}/edit" method="post" name="edit_employee">
+    <form action="/payroll/employee/{{employee_id}}/edit" method="post" name="edit_employee" id="empForm">
       {{ xsrf_form_html() }}
       <div >
           <table>

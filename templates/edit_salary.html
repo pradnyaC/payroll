@@ -1,33 +1,27 @@
 {% extends "base.html" %} 
-
 {% block body %}
-{% if len(errors) > 0 %}
-  {{ errors }}
-{% end %}
-  <div>
-    <form action="/payroll/salary/{{emp_id}}/edit" method="post" name="edit_salary">
+
+{% if is_an_admin and empname %}  
+    <form action="/payroll/salary/{{empid}}/edit" method="post" name="edit_salary" id="salForm">
       {{ xsrf_form_html() }}
       <div >
-        <table>
-          <tr>
-            <td>Employee Name:</td>
-            <td> {{emp_name}}</td>
-          </tr>
-          {% for c in sal_fields %}
-            <tr>
-              <td>{{ c['col_desc'] }}</td> 
-              <td>
-                <textarea name={{c['col_name']}} rows="1" cols="15">{% try %}{{ sal_details[c['col_name']] }}{% except %}{{ c['default_val'] }}{% end %}</textarea> 
-              </td>
-            </tr>
-          {% end %}
-        </table>
+          <table>
+          <!--Form starts-->
+              {% import functions %}
+              {{ functions.create_emp_form('templates/emp_form.html', 'templates/form_title.html', 'salary.yml', sal_details) }}
+          <!--From ends-->
+          </table>
       </div>
-      <input type="hidden" name="emp_id" value={{ emp_id }} />
-      <input type="submit" value="Submit">
+          
+      <div style="text-align: right;">
+        <input type="submit" name="save" value="Save"class="RoundButtons" />
+      </div>
     </form>
-  	{% end %}
-  </div>
+
+{% else %}
+  You are not allowed to view this page
+{% end %}
+{% end %}
 
 {% block page_title %}
   PaGaLGuY New user

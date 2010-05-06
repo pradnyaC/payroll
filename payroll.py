@@ -55,11 +55,15 @@ class Application(tornado.web.Application):
       (r"" + config['application_configuration']['base_path'] + "/employees", EmployeeHandler),
       (r"" + config['application_configuration']['base_path'] + "/employee/new", NewEmployeeHandler),
       (r"" + config['application_configuration']['base_path'] + "/employee/([0-9]+)/edit", EditEmployeeHandler),
+      (r"" + config['application_configuration']['base_path'] + "/salary", SalaryHandler),
       (r"" + config['application_configuration']['base_path'] + "/salary/([0-9]+/new)", NewSalaryHandler),
       (r"" + config['application_configuration']['base_path'] + "/salary/([0-9]+)/edit", EditSalaryHandler),
-      (r"" + config['application_configuration']['base_path'] + "/leave", LeaveHandler),
+      (r"" + config['application_configuration']['base_path'] + "/leaves", LeaveHandler),
+      (r"" + config['application_configuration']['base_path'] + "/leave/new", AddLeaveHandler),
+      (r"" + config['application_configuration']['base_path'] + "/expenses", ExpenseHandler),
+      (r"" + config['application_configuration']['base_path'] + "/expense/new", NewExpenseHandler),
+      (r"" + config['application_configuration']['base_path'] + "/expense/edit", EditExpenseHandler),
       (r"" + config['application_configuration']['base_path'] + "/salary_calc", SalaryCalcHandler),
-      (r"" + config['application_configuration']['base_path'] + "/admin/emp_struct", UserAdminHandler),
       ]
       
     settings = dict(
@@ -175,11 +179,10 @@ class NewEmployeeHandler(BaseHandler):
     for key in post_data: 
       if not str(key) == "_xsrf" and not str(key) == "save":
         employee_details[key] = post_data[key][0]
-    empid = emp_module.get_user_by_email(self.db, employee_details['email'])
-    employee_id = emp_module.new_employee(self.db, empid , employee_details)
+    employee_id = emp_module.new_employee(self.db, employee_details)
 
     #redirect to the page with all users
-    #self.redirect("/payroll/salary/"+str(employee_id)+"/new")
+    self.redirect("/payroll/salary/"+str(employee_id)+"/new")
 
 
 class EditEmployeeHandler(BaseHandler):
@@ -188,154 +191,135 @@ class EditEmployeeHandler(BaseHandler):
 
     self.render("edit_employee.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), employee_id=employee_id, employee_details=employee_details, errors="")
 
-
   def post(self, employee_id):
-    errors = []
-    post_data = self.request.arguments
-    employee_fields = users_module.get_employee_fields(self.db)
-    user_fields = [f['col_name'] for f in employee_fields]
-    
-    for field in employee_fields:
-      if int(field['required']) == 1:
-        if not self.request.arguments.has_key(field['col_name']) : errors.append("Please Enter "+ field['col_desc'])
-
     post_data = self.request.arguments
     employee_details = {}
-    for key in post_data:
-      if key in user_fields:
+    for key in post_data: 
+      if not str(key) == "_xsrf" and not str(key) == "save":
         employee_details[key] = post_data[key][0]
-    """
-    ### Specifically salary code ##
-    if not self.request.arguments.has_key("salary_mode") : errors.append("Please Enter salary_mode")
-    else:
-      if self.get_argument("salary_mode") == "bank":
-        pay_mode = "bank"
-        if not self.request.arguments.has_key("account_no"): 
-          accnt_no = None
-          errors.append("Please Enter accnt number")
-        else:
-          accnt_no = self.get_argument("account_no")
-      else:
-        pay_mode = "cheque"
-        accnt_no = None
-    ### ###
-    """
-    
-    if len(errors) > 0: 
-      errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      self.render("edit_user.html", current_user = self.get_current_user(), employee_id=employee_id, employee_fields=employee_fields, employee_details=employee_details, errors=errors_message)
-    else:
-      users_module.edit_employee_details(self.db, employee_id, employee_details)
-    
-      #redirect to the page with all users
-      self.redirect("/payroll/salary/"+employee_id+"/edit")
+
+    emp_module.edit_emp_details(self.db, employee_id, employee_details)
+
+    #redirect to the page with all users
+    self.redirect("/payroll/salary/"+str(employee_id)+"/edit")
+
+class SalaryHandler(BaseHandler):
+  def get(self):
+    salaries = emp_module.get_all_salary_details(self.db)
+    self.render("salaries.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), salaries=salaries)
+
 
 class NewSalaryHandler(BaseHandler):
-  def get(self, emp_id):
-    emp_id = emp_id.split("/new")[0]
-    emp_name = users_module.get_employee_details(self.db, emp_id)['name']
-    sal_fields = users_module.get_salary_fields(self.db)
-    
-    self.render("salary.html", current_user = self.get_current_user(), emp_id=emp_id, emp_name=emp_name, sal_fields=sal_fields, errors="")
+  def get(self, empid):
+    empid = empid.split("/new")[0]
+    self.render("new_salary.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), empid=empid)
 
-  def post(self, emp_id):
-    emp_id = emp_id.split("/new")[0]
-    errors = []
-    employee_details = users_module.get_employee_details(self.db, emp_id)
-    emp_name = employee_details['name']
-    sal_fields = users_module.get_salary_fields(self.db)
-    
-    for sal in sal_fields:
-      if int(sal['required']) == 1:
-        if not self.request.arguments.has_key(sal['col_name']) : errors.append("Please Enter "+ sal['col_desc'])
-
+  def post(self, empid):
+    empid = empid.split("/new")[0]
     post_data = self.request.arguments
     sal_details = {}
-    fields = [s['col_name'] for s in sal_fields]
-    for key in post_data:
-      if key in fields:
+    for key in post_data: 
+      if not str(key) == "_xsrf" and not str(key) == "save":
         sal_details[key] = post_data[key][0]
 
-    if len(errors) > 0: 
-      errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      self.render("salary.html", current_user = self.get_current_user(), emp_id=emp_id, emp_name=emp_name, sal_details=sal_details, sal_fields=sal_fields, errors=errors_message)
-    else:
-      users_module.add_salary(self.db, emp_id, sal_details )
-
-      #redirect to the page with all users
-      self.redirect("/payroll/employees")
+    emp_module.new_salary(self.db, empid, sal_details)
+    #redirect to the page with all users
+    self.redirect("/payroll/employees")
 
 class EditSalaryHandler(BaseHandler):
-  def get(self, emp_id):
-    sal_details = users_module.get_salary_details(self.db, emp_id)
-    emp_name = users_module.get_employee_details(self.db, emp_id)['name']
-    sal_fields = users_module.get_salary_fields(self.db)
+  def get(self, empid):
+    empid = empid.split("/edit")[0]
+    sal_details = emp_module.get_salary_details(self.db, empid)
+    try:
+      empname = emp_module.get_emp_details(self.db, empid)['emp_name']
+    except:
+      empname = None
     
-    self.render("edit_salary.html", current_user = self.get_current_user(), emp_id=emp_id, emp_name=emp_name, sal_details=sal_details, sal_fields=sal_fields, errors="")
+    self.render("edit_salary.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), empid=empid, empname=empname, sal_details=sal_details)
 
-  def post(self, emp_id):
-    errors = []
-    emp_details = users_module.get_employee_details(self.db, emp_id)
-    emp_name = emp_details['name']
-    sal_fields = users_module.get_salary_fields(self.db)
-
-    for sal in sal_fields:
-      if int(sal['required']) == 1:
-        if not self.request.arguments.has_key(sal['col_name']) : errors.append("Please Enter "+ sal['col_desc'])
-
+  def post(self, empid):
+    empid = empid.split("/edit")[0]
     post_data = self.request.arguments
     sal_details = {}
-    fields = [s['col_name'] for s in sal_fields]
-    for key in post_data:
-      if key in fields:
+    for key in post_data: 
+      if not str(key) == "_xsrf" and not str(key) == "save":
         sal_details[key] = post_data[key][0]
 
-    if len(errors) > 0: 
-      errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      self.render("edit_salary.html", current_user = self.get_current_user(), emp_id=emp_id, emp_name=emp_name, sal_details=sal_details, sal_fields=sal_fields, errors=errors_message)
-    else:
-      users_module.edit_salary(self.db, emp_id, sal_details)
-      
-      #redirect to the page with all users
-      self.redirect("/payroll/employees")
+    emp_module.edit_salary(self.db, empid, sal_details)
+
+    #redirect to the page with all users
+    self.redirect("/payroll/employees")
 
 class LeaveHandler(BaseHandler):
   def get(self):
-    user = self.get_current_user()
-    leave_types = users_module.get_leave_types(self.db)
-    print users_module.get_leave_details(self.db, 1)
-    self.render("leave_sheet.html", current_user = self.get_current_user(), user=user, leave_types=leave_types, errors="")
+    empid = self.get_current_user()['empid']
+    leaves = emp_module.get_leaves(self.db, empid)
+    self.render("leaves.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), leaves=leaves)
+
+
+class AddLeaveHandler(BaseHandler):
+  def get(self):
+    empid = self.get_current_user()['empid']
+    self.render("new_leave.html", current_user = self.get_current_user(), empid=empid)
 
   def post(self):
-    user = self.get_current_user()
-    errors = []
-    if not self.request.arguments.has_key("from_date") : errors.append("Please enter a From date")
-    if not self.request.arguments.has_key("to_date") : errors.append("Please enter a From date")
-    if not self.request.arguments.has_key("leave_type") : errors.append("Please select leave_type")
+    empid = self.get_current_user()['empid']
+    emp_module.add_leave(self.db, empid, self.get_argument("leave_date"))
 
-    post_data = self.request.arguments
-    if len(errors) > 0: 
-      errors_message = "Following errors were encountered<ul>" + "".join([ "<li>" + error + "</li>" for error in errors]) + "</ul>"
-      self.render("leave_sheet.html", current_user = self.get_current_user(), user=user, post_data=self.request.arguments, errors=errors_message)
-    else:
-      users_module.add_leaves(self.db, user['id'], self.get_argument("from_date"), self.get_argument("from_date"), self.get_argument("leave_type"))
+    #redirect to the page with all users
+    self.redirect("/payroll/leaves")
 
-      #redirect to the page with all users
-      self.redirect("/payroll/employees")
-
-class UserAdminHandler(BaseHandler):
+class ExpenseHandler(BaseHandler):
   def get(self):
-    emp_fields = users_module.get_employee_fields(self.db)
-    self.render("user_admin.html", current_user = self.get_current_user(), emp_fields=emp_fields, errors="")
+    empid = self.get_current_user()['empid']
+    expenses = emp_module.get_expenses(self.db, empid)
+    self.render("expenses.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), expenses=expenses)
 
-  #def post(self):
+
+class NewExpenseHandler(BaseHandler):
+  def get(self):
+    empid = self.get_current_user()['empid']
+    self.render("new_expense.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), empid=empid)
+
+  def post(self):
+    empid = self.get_current_user()['empid']
+    post_data = self.request.arguments
+    expense_details = {}
+    for key in post_data: 
+      if not str(key) == "_xsrf" and not str(key) == "save":
+        expense_details[key] = post_data[key][0]
+    
+    emp_module.add_expesne(self.db, empid, expense_details)
+    #redirect to the page with all users
+    self.redirect("/payroll/expenses")
+
+
+class EditExpenseHandler(BaseHandler):
+  def get(self):
+    empid = self.get_current_user()['empid']
+    expense_details = emp_module.get_expenses(self.db, empid)
+    try: expense_details = expense_details[empid]
+    except: expense_details = {}
+    self.render("edit_expense.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), empid=empid, expense_details=expense_details)
+
+  def post(self):
+    empid = self.get_current_user()['empid']
+    post_data = self.request.arguments
+    expense_details = {}
+    for key in post_data: 
+      if not str(key) == "_xsrf" and not str(key) == "save":
+        expense_details[key] = post_data[key][0]
+    
+    emp_module.add_expesne(self.db, empid, expense_details)
+    #redirect to the page with all users
+    self.redirect("/payroll/expenses")
 
 
 class SalaryCalcHandler(BaseHandler):
   def get(self, emp_id=None):
-    sal_sheet = users_module.calculate_salary(self.db, 4, emp_id)
-    slip_titles = users_module.get_sal_slip_titles(self.db)
-    self.render("salary_sheet.html", current_user = self.get_current_user(), sal_sheet=sal_sheet, slip_titles=slip_titles)
+    sal_sheet = emp_module.calc_salary(self.db, 1)
+    #slip_titles = users_module.get_sal_slip_titles(self.db)
+    #self.render("salary_sheet.html", current_user = self.get_current_user(), sal_sheet=sal_sheet, slip_titles=slip_titles)
 
 def main():
   tornado.options.parse_command_line()

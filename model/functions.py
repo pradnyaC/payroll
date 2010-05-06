@@ -104,7 +104,7 @@ def sanitize_text(html):
 def delete_row(db,table,key):
   return db.execute("UPDATE "+str(table)+" SET deleted = 1 WHERE id = %s",key)
 
-def get_date(date, timeformat="%Y-%m-%d %H:%M:%S"):
+def get_date(date_time, timeformat="%m/%d/%Y"):
   if isinstance(date_time, unicode):
     date_time = date_time.encode('utf-8')
     date_time = datetime.fromtimestamp(mktime(strptime(date_time.split(".")[0], timeformat)))
@@ -185,8 +185,8 @@ def create_left_menu(path, menu_yaml='menu.yml', active=-1):
     menu_display = menu_display + this_menu
   return menu_display
   
-def create_emp_form(path, title_path, form_yml="emp.yml", employee=None):
-  form_data = yaml.load(open(form_yml))['emp']
+def create_emp_form(path, title_path, form_yml="emp.yml", value_dict=None):
+  form_data = yaml.load(open(form_yml))['data']
   titles = [key for key in form_data]
   form_layout = open(path).read()
   title_layout = open(title_path).read()
@@ -200,16 +200,17 @@ def create_emp_form(path, title_path, form_yml="emp.yml", employee=None):
       maxlen = 0
       if field.has_key('maxlength'): maxlen = field['maxlength']
       this_field = form_layout.replace('{NAME}',str(field['name'])).replace('{LABEL}',str(field['label'])).replace('{ID}',str(field['id'])).replace('{SIZE}',str(field['size'])).replace('{MAXLENGTH}', str(maxlen))
-      if employee:
-        value = ""
-        if employee.has_key(field['name']): value = str(employee[field['name']])
-        this_field = this_field.replace('{VALUE}', str(value))
+
+      value = ""
+      if value_dict:
+        if value_dict.has_key(field['name']): value = str(value_dict[field['name']])
+      this_field = this_field.replace('{VALUE}', str(value))
       display = display + this_field
     form_display = form_display + title_field + display
   return form_display
 
-def create_emp_display(path, title_path, employee, form_yml="emp.yml"):
-  form_data = yaml.load(open(form_yml))['emp']
+def create_emp_display(path, title_path, value_dict, form_yml="emp.yml"):
+  form_data = yaml.load(open(form_yml))['data']
   titles = [key for key in form_data]
   form_layout = open(path).read()
   title_layout = open(title_path).read()
@@ -221,7 +222,7 @@ def create_emp_display(path, title_path, employee, form_yml="emp.yml"):
     for i in form_data[title]:
       field = form_data[title][i]
       value = ""
-      if employee.has_key(field['name']): value = str(employee[field['name']])
+      if value_dict.has_key(field['name']): value = str(value_dict[field['name']])
       this_field = form_layout.replace('{LABEL}',str(field['label'])).replace('{VALUE}',value)
       display = display + this_field
     form_display = form_display + title_field + display
@@ -229,6 +230,7 @@ def create_emp_display(path, title_path, employee, form_yml="emp.yml"):
 
 def create_validation_rules(form_yml="validate.yml"):
   return yaml.load(open(form_yml))
+
 
 def create_chart(x_labels, values=[]):
   chart_data = open("templates/chart_data.json").read()

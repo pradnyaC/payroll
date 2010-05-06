@@ -27,6 +27,10 @@
               {% import functions %}
               {{ functions.create_validation_rules('validate.yml') }}
             );
+            $("#salForm").validate(
+              {% import functions %}
+              {{ functions.create_validation_rules('salary_validation.yml') }}
+            );
           });
         </script>
     </head>
