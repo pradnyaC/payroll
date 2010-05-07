@@ -4,23 +4,8 @@ CREATE TABLE users (userid varchar(255), name varchar(255), email varchar(255));
 CREATE TABLE salary (empid varchar(255), details longblob);
 CREATE TABLE leaves (leave_key varchar(255), details longblob);
 CREATE TABLE expenses (expenseid varchar(255), details longblob);
-
-
-
-
-
-
-
-
-
-
-
-emp_id -> {dict of details}
-
-
-
-
-
+CREATE TABLE holidays (holiday timestamp NOT NULL, reason varchar(255));
+CREATE TABLE working_sat (satid varchar(255), details longblob);
 
 
 

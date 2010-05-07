@@ -64,6 +64,8 @@ class Application(tornado.web.Application):
       (r"" + config['application_configuration']['base_path'] + "/expense/new", NewExpenseHandler),
       (r"" + config['application_configuration']['base_path'] + "/expense/edit", EditExpenseHandler),
       (r"" + config['application_configuration']['base_path'] + "/salary_calc", SalaryCalcHandler),
+      (r"" + config['application_configuration']['base_path'] + "/holiday", HolidayHandler),
+      (r"" + config['application_configuration']['base_path'] + "/working", WorkingDayHandler),
       ]
       
     settings = dict(
@@ -314,13 +316,35 @@ class EditExpenseHandler(BaseHandler):
     #redirect to the page with all users
     self.redirect("/payroll/expenses")
 
-
 class SalaryCalcHandler(BaseHandler):
   def get(self, emp_id=None):
-    sal_sheet = emp_module.calc_salary(self.db, 1)
-    #slip_titles = users_module.get_sal_slip_titles(self.db)
-    #self.render("salary_sheet.html", current_user = self.get_current_user(), sal_sheet=sal_sheet, slip_titles=slip_titles)
+    salary_slip = emp_module.calc_salary(self.db, 2)
+    self.render("salary_sheet.html", current_user = self.get_current_user(), salary_slip=salary_slip)
 
+class HolidayHandler(BaseHandler):
+  def get(self):
+    self.render("holiday.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']))
+
+  def post(self):
+    if self.request.arguments.has_key("month") and self.request.arguments.has_key("year") and self.request.arguments.has_key("dates"):
+      dates = self.get_argument("dates").split(",")
+      for d in dates:
+        holiday = str(self.get_argument("month")) + "/" + str(d) + "/"+ self.get_argument("year")
+        emp_module.add_holiday(self.db, holiday)
+      self.redirect(self.request.headers["Referer"])
+  
+class WorkingDayHandler(BaseHandler):
+  def get(self):
+    self.render("working_day.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']))
+
+  def post(self):
+    if self.request.arguments.has_key("month") and self.request.arguments.has_key("year") and self.request.arguments.has_key("dates"):
+      dates = self.get_argument("dates").split(",")
+      for d in dates:
+        date = str(self.get_argument("month")) + "/" + str(d) + "/"+ self.get_argument("year")
+        emp_module.add_working_day(self.db, date)
+      self.redirect(self.request.headers["Referer"])
+  
 def main():
   tornado.options.parse_command_line()
   http_server = tornado.httpserver.HTTPServer(Application())

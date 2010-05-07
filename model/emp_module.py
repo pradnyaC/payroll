@@ -3,6 +3,7 @@ import simplejson
 import functions
 import yaml
 from string import Template
+from calendar import Calendar
 
 """ Users functions """
 def new_user(db, userid, name, mail):
@@ -74,7 +75,10 @@ def new_salary(db, empid, sal_details):
   return db.execute("INSERT INTO salary (empid, details) VALUES (%s, %s)", empid, simplejson.dumps(sal_details))
 
 def edit_salary(db, empid, sal_details):
-  return db.execute("UPDATE salary SET details = %s WHERE empid = %s", simplejson.dumps(sal_details), empid)
+  if db.query("SELECT details FROM salary WHERE empid = %s", empid):
+    return db.execute("UPDATE salary SET details = %s WHERE empid = %s", simplejson.dumps(sal_details), empid)
+  else:
+    db.execute("INSERT INTO salary (empid, details) VALUES (%s, %s)", empid, simplejson.dumps(sal_details))
 
 def delete_salary(db, empid):
   return db.execute("UPDATE salary SET deleted = 1 WHERE empid = %s", empid)
@@ -98,6 +102,34 @@ def get_all_salary_details(db):
 
 
 """ Leave functions """
+def add_vacation_leave(db, empid, from_date, to_date):
+  key = str(empid) + ":VL:" + str(leave_date.month) + ":" + str(leave_date.year)
+  result = db.get("SELECT details FROM leaves WHERE leave_key LIKE %s", str(key))
+
+  if result:
+    leaves = simplejson.loads(result['details'])
+    leaves.append((from_date, to_date))
+    return db.execute("UPDATE leaves SET details = %s WHERE leave_key LIKE %s", simplejson.dumps(leaves), str(key))
+  else:
+    return db.execute("INSERT INTO leaves (leave_key, details) VALUES (%s, %s)", str(key), simplejson.dumps([date]))
+
+def get_vacation_leave(db, empid, month=datetime.date.today().month, year=datetime.date.today().year)
+  key = str(empid) + ":VL:" + str(leave_date.month) + ":" + str(leave_date.year)
+  result = db.get("SELECT * FROM leaves WHERE leave_key LIKE %s ", key)
+  if result:
+    return simplejson.loads(result['details'])
+  else:
+    return []
+  
+def calc_vacation_leave_accnt(db, empid, month=datetime.date.today().month, year=datetime.date.today().year):
+  vaction_leaves = get_vacation_leave(db, empid, month, year)
+  vl = 0
+  for (from_date,to_date) in vaction_leaves:
+    from_date = functions.get_date(from_date)
+    to_date = functions.get_date(to_date)
+    vl = vl + (to_date - from_date)
+  return vl
+  
 def add_leave(db, empid, date):
   leave_date = functions.get_date(date)
   key = str(empid) + ":" + str(leave_date.month) + ":" + str(leave_date.year)
@@ -128,7 +160,15 @@ def get_leaves(db, empid, month=datetime.date.today().month, year=datetime.date.
   else:
     return []
 
-
+def calc_leave_accnt(db, empid, month=datetime.date.today().month, year=datetime.date.today().year):
+  leaves = get_leaves(db, empid, month, year)
+  cal = Calendar()
+  working_days = [w for w in cal.iterweekdays()]
+  total_working_days = len(working_days) + len(get_working_days(db)) - len(get_holidays(db))
+  total_leaves = (0, len(leaves) - 2)[len(leaves) > 2]
+  total_pay_days = total_working_days - total_leaves
+  return {'working_days':total_working_days, 'total_leaves':total_leaves}
+  
 """ Expense funtions """
 def add_expesne(db, empid, details, month=datetime.date.today().month):
   expenseid = str(empid) + ":" + str(month)
@@ -149,12 +189,16 @@ def get_expenses(db, empid, month=datetime.date.today().month):
 def calc_salary(db, empid, formula_yml="formulas.yml"):
   result = {}
   val_dict = {}
-
+  
+  #accumulate all information needed to calculate salary
   salary_details = get_salary_details(db, empid)
   expense_details = get_expenses(db, empid)[empid]
+  leave_details = calc_leave_accnt(db, empid)
   val_dict = dict(val_dict, **salary_details)
   val_dict = dict(val_dict, **expense_details)
-  
+  val_dict = dict(val_dict, **leave_details)
+
+  #calculate expressions
   formula_set = yaml.load(open(formula_yml))
   for key in formula_set:
     res = {}
@@ -162,6 +206,47 @@ def calc_salary(db, empid, formula_yml="formulas.yml"):
       formula = formula_set[key][i]
       res[i] = eval(Template(formula).substitute(val_dict))
       val_dict[i] = res[i]
+    val_dict[key] = res['z']
     result[key] = res['z']
+  
+  #prepare result dict
+  emp_details = get_emp_details(db, empid)
+  val_dict = dict(val_dict, **emp_details)
+  return dict(val_dict, **result)
 
-  return result
+
+""" Holiday functions """
+
+def add_holiday(db, holiday, reason=""):
+  holiday = functions.get_date(holiday)
+  return db.execute("INSERT INTO holidays (holiday, reason) VALUES (%s, %s)", holiday, reason)
+
+def get_holidays(db, month=datetime.date.today().month, year=datetime.date.today().year):
+  start_date = datetime.date(year, month, 1)
+  end_date = datetime.date(year, month, 31)
+  result = db.query("SELECT holiday FROM holidays WHERE holiday BETWEEN %s AND %s", start_date, end_date)
+
+  if result:
+    return [h['holiday'] for h in result]
+  else:
+    return []
+
+def add_working_day(db, date, month=datetime.date.today().month, year=datetime.date.today().year):
+  key = str(month) + ":" + str(year)
+  result = db.get("SELECT details FROM working_sat WHERE satid LIKE %s", str(key))
+
+  if result:
+    sats = simplejson.loads(result['details'])
+    sats.append(date)
+    return db.execute("UPDATE working_sat SET details = %s WHERE satid LIKE %s", simplejson.dumps(sats), str(key))
+  else:
+    return db.execute("INSERT INTO working_sat (satid, details) VALUES (%s, %s)", str(key), simplejson.dumps([date]))
+
+def get_working_days(db, month=datetime.date.today().month, year=datetime.date.today().year):
+  key = str(month) + ":" + str(year)
+  result = db.get("SELECT * FROM working_sat WHERE satid LIKE %s ", key)
+  if result:
+    return simplejson.loads(result['details'])
+  else:
+    return []
+

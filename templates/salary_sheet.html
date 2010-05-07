@@ -1,24 +1,13 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% block body %}
-{% if sal_sheet %}
-  {% for emp_id in sal_sheet %}
-    <div>
-      <table border="1">
-        {% for title in slip_titles %}
-        <tr>
-          <td>{{ title }}</td>
-        </tr>
-        <tr>
-        {% for s in sal_sheet[emp_id][title] %}
-          <td> {{ s }} : {{ sal_sheet[emp_id][title][s] }}</td>
-        {% end %}
-        </tr>
-      {% end %}
-    </table>
-  </div>
+<div>
+{% if len(salary_slip) > 0 %}
+    {% import functions %}
+    {{ functions.create_emp_display('templates/emp_display.html', 'templates/form_title.html', salary_slip, 'salary_slip.yml') }}
+    
 {% end %}
-{% end %}
+</div>
 {% end %}
 {% block page_title %}
-  PaGaLGuY New user
+  PaGaLGuY All users
 {% end %}
