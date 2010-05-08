@@ -173,16 +173,20 @@ def generate_snipet(html, length = 100):
     text = text.lstrip()
     return text
   
-def create_left_menu(path, menu_yaml='menu.yml', active=-1):
+def create_left_menu(path, menu_yaml='menu.yml', is_an_admin=0):
+  
   menu_data = yaml.load(open(menu_yaml))['menu']
   menu_data = [menu_data[i] for i in menu_data]
   left_menu_layout = open(path).read()
   menu_display = ''
   for i,menu in enumerate(menu_data):
     this_menu = left_menu_layout.replace('{TITLE}',menu['title']).replace('{URL}',menu['url']).replace('{ICON}',menu['icon'])
-    if active == i: this_menu = this_menu.replace('{MENUCLASS}',' class="Active"')
-    else: this_menu = this_menu.replace('{MENUCLASS}','')
-    menu_display = menu_display + this_menu
+    if menu['access'] == "all":
+      menu_display = menu_display + this_menu
+    elif menu['access'] == "admin" and is_an_admin:
+      menu_display = menu_display + this_menu
+    else:
+      continue
   return menu_display
   
 def create_emp_form(path, title_path, form_yml="emp.yml", value_dict=None):

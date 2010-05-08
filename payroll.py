@@ -59,6 +59,7 @@ class Application(tornado.web.Application):
       (r"" + config['application_configuration']['base_path'] + "/salary/([0-9]+/new)", NewSalaryHandler),
       (r"" + config['application_configuration']['base_path'] + "/salary/([0-9]+)/edit", EditSalaryHandler),
       (r"" + config['application_configuration']['base_path'] + "/leaves", LeaveHandler),
+      (r"" + config['application_configuration']['base_path'] + "/vacation", VacationLeaveHandler),
       (r"" + config['application_configuration']['base_path'] + "/leave/new", AddLeaveHandler),
       (r"" + config['application_configuration']['base_path'] + "/expenses", ExpenseHandler),
       (r"" + config['application_configuration']['base_path'] + "/expense/new", NewExpenseHandler),
@@ -255,8 +256,11 @@ class EditSalaryHandler(BaseHandler):
 class LeaveHandler(BaseHandler):
   def get(self):
     empid = self.get_current_user()['empid']
-    leaves = emp_module.get_leaves(self.db, empid)
-    self.render("leaves.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), leaves=leaves)
+    monthly_leaves = emp_module.get_leaves(self.db, empid)
+    vacation_leaves =  emp_module.get_month_vl(self.db, empid)
+    emp_module.calc_vacation_leave_accnt(self.db, empid)
+
+    self.render("leaves.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), monthly_leaves=monthly_leaves, vacation_leaves=vacation_leaves)
 
 
 class AddLeaveHandler(BaseHandler):
@@ -266,10 +270,21 @@ class AddLeaveHandler(BaseHandler):
 
   def post(self):
     empid = self.get_current_user()['empid']
-    emp_module.add_leave(self.db, empid, self.get_argument("leave_date"))
+    if self.get_argument("leave_type") == "vl" and self.request.arguments.has_key("from_date") and self.request.arguments.has_key("to_date"):
+      emp_module.add_vacation_leave(self.db, empid, self.get_argument("from_date"), self.get_argument("to_date"))
+    else:
+      emp_module.add_leave(self.db, empid, self.get_argument("from_date"))
 
     #redirect to the page with all users
     self.redirect("/payroll/leaves")
+
+class VacationLeaveHandler(BaseHandler):
+  def get(self):
+    vl_accnts = emp_module.get_vl_accounts(self.db)
+
+    self.render("update_vl.html", current_user = self.get_current_user(), is_an_admin=int(self.get_current_user()['is_admin']), vl_accnts=vl_accnts)
+
+
 
 class ExpenseHandler(BaseHandler):
   def get(self):

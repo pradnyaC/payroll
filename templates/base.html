@@ -68,9 +68,9 @@
                                     <!--Left Menu Starts-->
                                        {% import functions %}
                                        {% try %}
-                                        {{ functions.create_left_menu('templates/left_menu.html', 'menu.yml', active_link) }}
+                                        {{ functions.create_left_menu('templates/left_menu.html', 'menu.yml', current_user['is_admin']) }}
                                        {% except %}
-                                        {{ functions.create_left_menu('templates/left_menu.html', 'menu.yml') }}
+                                        {{ functions.create_left_menu('templates/left_menu.html', 'menu.yml', current_user['is_admin']) }}
                                        {% end %}
                                     <!--Left Menu Ends-->
                                 </div>

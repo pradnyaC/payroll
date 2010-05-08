@@ -5,6 +5,10 @@ import yaml
 from string import Template
 from calendar import Calendar
 
+month_30 = [2, 4, 6, 9, 11]
+month_31 = [1, 3, 5, 7, 8, 10, 12]
+
+
 """ Users functions """
 def new_user(db, userid, name, mail):
   if not db.query("SELECT * FROM users WHERE userid = %s", userid):
@@ -37,6 +41,9 @@ def new_employee(db, details):
     db.execute("UPDATE users SET empid = %s WHERE email = %s", empid, details['email'])
   else:
     db.execute("INSERT INTO users (empid, email) VALUES (%s, %s)", empid, details['email'])
+
+  #insert a entry into vacation leave accouts table
+  db.execute("INSERT INTO vacation_leave_accnt (empid, leaves) VALUES (%s, 0)", empid)
   return empid
 
 def edit_emp_details(db, empid, details):
@@ -101,9 +108,13 @@ def get_all_salary_details(db):
     return {} 
 
 
-""" Leave functions """
+""" Vacation Leave functions """
+def get_vl_accounts(db):
+  return db.query("SELECT * FROM vacation_leave_accnt")
+
 def add_vacation_leave(db, empid, from_date, to_date):
-  key = str(empid) + ":VL:" + str(leave_date.month) + ":" + str(leave_date.year)
+  start_date = functions.get_date(from_date)
+  key = str(empid) + ":VL:" + str(start_date.month) + ":" + str(start_date.year)
   result = db.get("SELECT details FROM leaves WHERE leave_key LIKE %s", str(key))
 
   if result:
@@ -111,10 +122,11 @@ def add_vacation_leave(db, empid, from_date, to_date):
     leaves.append((from_date, to_date))
     return db.execute("UPDATE leaves SET details = %s WHERE leave_key LIKE %s", simplejson.dumps(leaves), str(key))
   else:
-    return db.execute("INSERT INTO leaves (leave_key, details) VALUES (%s, %s)", str(key), simplejson.dumps([date]))
+    return db.execute("INSERT INTO leaves (leave_key, details) VALUES (%s, %s)", str(key), simplejson.dumps([(from_date, to_date)]))
 
-def get_vacation_leave(db, empid, month=datetime.date.today().month, year=datetime.date.today().year)
-  key = str(empid) + ":VL:" + str(leave_date.month) + ":" + str(leave_date.year)
+
+def get_month_vl(db, empid, month=datetime.date.today().month, year=datetime.date.today().year):
+  key = str(empid) + ":VL:" + str(month) + ":" + str(year)
   result = db.get("SELECT * FROM leaves WHERE leave_key LIKE %s ", key)
   if result:
     return simplejson.loads(result['details'])
@@ -122,14 +134,22 @@ def get_vacation_leave(db, empid, month=datetime.date.today().month, year=dateti
     return []
   
 def calc_vacation_leave_accnt(db, empid, month=datetime.date.today().month, year=datetime.date.today().year):
-  vaction_leaves = get_vacation_leave(db, empid, month, year)
+  vaction_leaves = get_month_vl(db, empid, month, year)
   vl = 0
+  end_date = datetime.datetime(year, month, (31, 30)[month in month_30])
   for (from_date,to_date) in vaction_leaves:
-    from_date = functions.get_date(from_date)
     to_date = functions.get_date(to_date)
-    vl = vl + (to_date - from_date)
+    from_date = functions.get_date(from_date)
+
+    #Check if to_date is in the same month or not
+    if not to_date.month == month: to_date = end_date
+
+    vl = vl + (to_date - from_date).days + 1
+  print vl
   return vl
-  
+
+
+""" Monthly leaves functions """
 def add_leave(db, empid, date):
   leave_date = functions.get_date(date)
   key = str(empid) + ":" + str(leave_date.month) + ":" + str(leave_date.year)
@@ -160,7 +180,7 @@ def get_leaves(db, empid, month=datetime.date.today().month, year=datetime.date.
   else:
     return []
 
-def calc_leave_accnt(db, empid, month=datetime.date.today().month, year=datetime.date.today().year):
+def calc_month_leave_accnt(db, empid, month=datetime.date.today().month, year=datetime.date.today().year):
   leaves = get_leaves(db, empid, month, year)
   cal = Calendar()
   working_days = [w for w in cal.iterweekdays()]
@@ -168,7 +188,9 @@ def calc_leave_accnt(db, empid, month=datetime.date.today().month, year=datetime
   total_leaves = (0, len(leaves) - 2)[len(leaves) > 2]
   total_pay_days = total_working_days - total_leaves
   return {'working_days':total_working_days, 'total_leaves':total_leaves}
-  
+
+
+
 """ Expense funtions """
 def add_expesne(db, empid, details, month=datetime.date.today().month):
   expenseid = str(empid) + ":" + str(month)
@@ -193,7 +215,7 @@ def calc_salary(db, empid, formula_yml="formulas.yml"):
   #accumulate all information needed to calculate salary
   salary_details = get_salary_details(db, empid)
   expense_details = get_expenses(db, empid)[empid]
-  leave_details = calc_leave_accnt(db, empid)
+  leave_details = calc_month_leave_accnt(db, empid)
   val_dict = dict(val_dict, **salary_details)
   val_dict = dict(val_dict, **expense_details)
   val_dict = dict(val_dict, **leave_details)
@@ -223,7 +245,7 @@ def add_holiday(db, holiday, reason=""):
 
 def get_holidays(db, month=datetime.date.today().month, year=datetime.date.today().year):
   start_date = datetime.date(year, month, 1)
-  end_date = datetime.date(year, month, 31)
+  end_date = datetime.date(year, month, (31, 30)[month in month_30])
   result = db.query("SELECT holiday FROM holidays WHERE holiday BETWEEN %s AND %s", start_date, end_date)
 
   if result:

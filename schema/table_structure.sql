@@ -7,7 +7,7 @@ CREATE TABLE expenses (expenseid varchar(255), details longblob);
 CREATE TABLE holidays (holiday timestamp NOT NULL, reason varchar(255));
 CREATE TABLE working_sat (satid varchar(255), details longblob);
 
-
+CREATE TABLE vacation_leave_accnt (empid int(20) NOT NULL, leaves int(20));
 
 
 
